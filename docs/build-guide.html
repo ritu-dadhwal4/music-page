@@ -1,0 +1,1051 @@
+<title>Make a Music Page</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+
+<style>
+  :root {
+    --ground:      #f4f6fa;
+    --surface:     #ffffff;
+    --surface-sub: #eaeef4;
+    --ink:         #141922;
+    --ink-mid:     #414c5c;
+    --ink-soft:    #667281;
+    --rule:        #d8dfe9;
+    --rule-soft:   #e6ebf2;
+    --accent:      #1f4e79;
+    --accent-soft: #e3ecf5;
+    --subject:     #c96322;
+    --subject-bg:  #fbf0e6;
+    --term-bg:     #171d26;
+    --term-ink:    #dbe3ec;
+    --term-dim:    #7f8b9b;
+    --shadow:      0 1px 2px rgba(20, 25, 34, .05), 0 10px 28px -14px rgba(20, 25, 34, .16);
+
+    --measure: 40rem;
+    --rail: 7.5rem;
+
+    --f-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+    --f-body: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --f-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #0e1218;
+      --surface:     #161c25;
+      --surface-sub: #1c232d;
+      --ink:         #e7ecf3;
+      --ink-mid:     #b3becc;
+      --ink-soft:    #8794a4;
+      --rule:        #29323f;
+      --rule-soft:   #212934;
+      --accent:      #85aede;
+      --accent-soft: #17222f;
+      --subject:     #e59254;
+      --subject-bg:  #251a12;
+      --term-bg:     #080b0f;
+      --term-ink:    #dbe3ec;
+      --term-dim:    #6d7887;
+      --shadow:      0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px -14px rgba(0, 0, 0, .7);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #0e1218;
+    --surface:     #161c25;
+    --surface-sub: #1c232d;
+    --ink:         #e7ecf3;
+    --ink-mid:     #b3becc;
+    --ink-soft:    #8794a4;
+    --rule:        #29323f;
+    --rule-soft:   #212934;
+    --accent:      #85aede;
+    --accent-soft: #17222f;
+    --subject:     #e59254;
+    --subject-bg:  #251a12;
+    --term-bg:     #080b0f;
+    --term-ink:    #dbe3ec;
+    --term-dim:    #6d7887;
+    --shadow:      0 1px 2px rgba(0, 0, 0, .4), 0 10px 28px -14px rgba(0, 0, 0, .7);
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    font-size: 1.0625rem;
+    line-height: 1.66;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: calc(var(--rail) + var(--measure) + 9rem);
+    margin: 0 auto;
+    padding: 0 2rem 7rem;
+  }
+
+  a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  code { font-family: var(--f-mono); font-size: .8125em; }
+  p code, li code, td code, dd code {
+    background: var(--surface-sub);
+    padding: .1em .35em;
+    border-radius: 3px;
+    color: var(--ink-mid);
+  }
+
+  /* masthead */
+  .masthead { padding: 4.5rem 0 2rem; border-bottom: 2px solid var(--ink); }
+  .eyebrow {
+    font-family: var(--f-mono); font-size: .6875rem; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--ink-soft); margin: 0 0 1.25rem;
+  }
+  .masthead h1 {
+    font-family: var(--f-display); font-weight: 700;
+    font-size: clamp(2.5rem, 6.5vw, 4rem); line-height: 1;
+    letter-spacing: -.03em; text-wrap: balance; margin: 0 0 1rem;
+  }
+  .standfirst {
+    font-size: 1.1875rem; line-height: 1.55; color: var(--ink-mid);
+    max-width: 36rem; margin: 0 0 2rem;
+  }
+
+  .shots {
+    display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 1.5rem; align-items: end; margin: 2.5rem 0 0;
+  }
+  .shot { display: flex; flex-direction: column; gap: .6rem; min-width: 0; }
+  .shot img {
+    display: block; width: 100%; height: auto; border-radius: 5px;
+    border: 1px solid var(--rule); box-shadow: var(--shadow);
+  }
+  .shot span {
+    font-family: var(--f-mono); font-size: .625rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-soft);
+  }
+
+  .factbar {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1.5rem 2rem; padding: 2.5rem 0 .5rem;
+  }
+  .fact dt {
+    font-family: var(--f-mono); font-size: .625rem; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--ink-soft); margin: 0 0 .3rem;
+  }
+  .fact dd {
+    font-family: var(--f-display); font-size: .9375rem; font-weight: 500;
+    margin: 0; color: var(--ink);
+  }
+
+  /* contents */
+  .contents { padding: 2.5rem 0; border-bottom: 1px solid var(--rule); }
+  .contents h2 {
+    font-family: var(--f-mono); font-size: .6875rem; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--ink-soft); font-weight: 500; margin: 0 0 1.25rem;
+  }
+  .toc { list-style: none; margin: 0; padding: 0; display: grid; gap: .1rem; max-width: var(--measure); }
+  .toc li { display: flex; gap: 1rem; align-items: baseline; }
+  .toc .num { font-family: var(--f-mono); font-size: .75rem; color: var(--ink-soft); min-width: 3.5rem; }
+  .toc a {
+    font-family: var(--f-display); font-size: 1rem; text-decoration: none;
+    color: var(--ink); padding: .3rem 0;
+  }
+  .toc a:hover { color: var(--accent); text-decoration: underline; }
+
+  /* steps */
+  .sec { display: grid; grid-template-columns: var(--rail) minmax(0, 1fr); gap: 2.5rem; padding: 3.5rem 0 0; }
+  .sec + .sec { border-top: 1px solid var(--rule-soft); }
+  .rail { position: sticky; top: 1.5rem; align-self: start; }
+  .rail .n {
+    font-family: var(--f-mono); font-size: .625rem; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--accent);
+    display: block; line-height: 1.4;
+  }
+  .rail .note {
+    font-family: var(--f-mono); font-size: .625rem; line-height: 1.5;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft);
+    margin-top: .6rem; display: block;
+  }
+  .body { min-width: 0; max-width: var(--measure); }
+
+  .sec h2 {
+    font-family: var(--f-display); font-size: clamp(1.5rem, 3vw, 1.9rem);
+    font-weight: 600; letter-spacing: -.02em; line-height: 1.15;
+    text-wrap: balance; margin: 0 0 1.25rem;
+  }
+  .sec h3 {
+    font-family: var(--f-display); font-size: 1.0625rem; font-weight: 600;
+    letter-spacing: -.005em; margin: 2.25rem 0 .6rem;
+  }
+  .sec h4 {
+    font-family: var(--f-mono); font-size: .6875rem; font-weight: 500;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft);
+    margin: 1.75rem 0 .6rem;
+  }
+  .sec p { margin: 0 0 1.1rem; }
+  .sec ul, .sec ol { margin: 0 0 1.1rem; padding-left: 1.2rem; }
+  .sec li { margin-bottom: .5rem; }
+  .lede { font-size: 1.125rem; color: var(--ink-mid); }
+  .wide { max-width: min(52rem, 100%); }
+
+  /* terminal */
+  .cmd {
+    background: var(--term-bg); color: var(--term-ink); border-radius: 5px;
+    padding: 1rem 1.2rem; margin: 0 0 1.25rem; overflow-x: auto;
+    font-family: var(--f-mono); font-size: .8125rem; line-height: 1.85;
+  }
+  .cmd .c { color: var(--term-dim); }
+  .cmd .p { color: var(--subject); user-select: none; }
+  .cmd b { font-weight: 400; color: #fff; }
+  :root[data-theme="dark"] .cmd b { color: #fff; }
+
+  /* prompts — quoted project material */
+  .prompt { border-left: 3px solid var(--subject); background: var(--subject-bg); border-radius: 0 4px 4px 0; margin: 0 0 1.5rem; }
+  .prompt-head {
+    display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: baseline;
+    justify-content: space-between; padding: .85rem 1.1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--subject) 22%, transparent);
+  }
+  .prompt-head strong { font-family: var(--f-display); font-size: .9375rem; font-weight: 600; color: var(--ink); }
+  .prompt-head span {
+    font-family: var(--f-mono); font-size: .6875rem; letter-spacing: .06em;
+    color: var(--subject); text-transform: uppercase;
+  }
+  .prompt-body {
+    max-height: 27rem; overflow-y: auto; padding: 1.1rem;
+    font-family: var(--f-mono); font-size: .75rem; line-height: 1.75;
+    color: var(--ink-mid); white-space: pre-wrap; overflow-wrap: break-word;
+  }
+  .scroll-hint {
+    font-family: var(--f-mono); font-size: .625rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--ink-soft); padding: .5rem 1.1rem;
+    border-top: 1px solid color-mix(in srgb, var(--subject) 18%, transparent); margin: 0;
+  }
+
+  /* callout */
+  .callout { background: var(--accent-soft); border-radius: 4px; padding: 1.1rem 1.25rem; margin: 0 0 1.5rem; font-size: 1rem; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout strong { font-family: var(--f-display); font-weight: 600; }
+
+  /* tables */
+  .tablewrap { overflow-x: auto; margin: 0 0 1.5rem; }
+  table { border-collapse: collapse; width: 100%; font-family: var(--f-display); font-size: .875rem; }
+  th, td { text-align: left; padding: .7rem .9rem .7rem 0; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+  th {
+    font-family: var(--f-mono); font-size: .625rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--ink-soft); font-weight: 500;
+    border-bottom: 1px solid var(--rule); white-space: nowrap;
+  }
+  td.k { font-family: var(--f-mono); font-size: .75rem; color: var(--accent); white-space: nowrap; }
+
+  /* spec outline */
+  .spec { list-style: none; margin: 0 0 1.5rem; padding: 0; }
+  .spec > li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 1rem; padding: .85rem 0; border-bottom: 1px solid var(--rule-soft); margin: 0; }
+  .spec .sn { font-family: var(--f-mono); font-size: .75rem; color: var(--accent); }
+  .spec .st { font-family: var(--f-display); font-weight: 600; font-size: .9375rem; display: block; margin-bottom: .2rem; }
+  .spec .sd { font-size: .9375rem; color: var(--ink-mid); }
+
+  /* file tree */
+  .tree {
+    font-family: var(--f-mono); font-size: .75rem; line-height: 1.9;
+    background: var(--surface); border: 1px solid var(--rule); border-radius: 4px;
+    padding: 1.1rem 1.25rem; overflow-x: auto; margin: 0 0 1.5rem; color: var(--ink-mid);
+  }
+  .tree b { color: var(--ink); font-weight: 500; }
+  .tree i { color: var(--ink-soft); font-style: normal; }
+
+  /* numbered walkthrough inside a step */
+  ol.walk { list-style: none; counter-reset: w; padding: 0; margin: 0 0 1.5rem; }
+  ol.walk > li {
+    counter-increment: w; position: relative; padding-left: 2.4rem; margin-bottom: 1rem;
+  }
+  ol.walk > li::before {
+    content: counter(w);
+    position: absolute; left: 0; top: .1rem;
+    font-family: var(--f-mono); font-size: .6875rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--accent); color: var(--surface);
+  }
+  :root[data-theme="dark"] ol.walk > li::before,
+  :root:not([data-theme="light"]) ol.walk > li::before { color: var(--ground); }
+
+  .colophon {
+    margin-top: 4rem; padding-top: 2rem; border-top: 2px solid var(--ink);
+    font-family: var(--f-mono); font-size: .6875rem; line-height: 1.9;
+    letter-spacing: .04em; color: var(--ink-soft); text-transform: uppercase;
+  }
+
+  @media (max-width: 46rem) {
+    .page { padding: 0 1.25rem 4rem; }
+    .sec { grid-template-columns: 1fr; gap: .85rem; padding-top: 2.75rem; }
+    .rail { position: static; }
+    .rail .note { margin-top: .2rem; }
+    .masthead { padding-top: 3rem; }
+    .shots { grid-template-columns: 1fr; }
+    .toc .num { min-width: 3rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="eyebrow">Build guide &middot; Design to deployed site</p>
+    <h1>Make a Music Page</h1>
+    <p class="standfirst">A personalised music player you configure privately and share as a public link. This guide takes you from two design prompts to a live site on Netlify — every prompt, every file, every command.</p>
+
+    <div class="shots">
+      <figure class="shot" style="margin:0">
+        <img src="data:image/jpeg;base64,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XFs4ej3fq1feP5mdKlc056/Ma01ulNuTXhtF2tRHe20kvRZhvXcdXnr7sI+X9TFzvewS8P8A9NzlDnGE+3NKnUWdSSx39R11YyTTT2p5zry+Zlr33Y/jzGvfdj+PMyusrStp05aye3vk2diMXnMjra992P48xr33Y/jzLZq7gOnr33Y/jzGvfdj+PMbGruA6evfdj+PMa992P48xsau4Dp6992P48xr33Y/jzGxq7gOnr33Y/jzGvfdj+PMbGruA6evfdj+PMa992P48xsau4Dp6992P48xr33Y/jzGxq7hlDcdHXveugn4//plz192EfL+pYyTSXaXDgdW6tXWalCo4NZ3JGLnev/AWfx3jXvux/HmSZv4XWfbino3XWJz18blKMXjv3COjVGevHVjLrajHL+/By6992P48xr33Y/jzJ29GslKzlCcZSqyeO5bTuHT177sfx5k1r7sV+PvETBrLug6Wtfdivx94173sfx5l2NXdB0te+7H8eY177sfx5jY1/wBd0HS173sfx5jXvex/HmNjV3QdLXvux/HmNe+7H8eY2NXdB0te+7H8eZOcvux/HmNjSXeB0de+7H8eY177sfx5jY0/13X9pIS3o4rV12pc/TUOHec727zUMz2cFzbwuaepUW5qUX6sluZoZaN09GtJ06miZxz6MpU6kZPx2v8Aeej1FxfmNXvfmScbIl5iVlyqz6FTQuOrKqnX+h+VDlJuvopa+9qdfZ4I9fq978y6ve/Mmv8Aq3Hp0NF6PVnDnKzhUu5wjCrVjFpSUc4STb2LL6+s7xdVcZeZNXvfmapkA1e9+Y1e9+YUA1e9+Y1e9+YADV735jV735gANXvfmXVXGXmEQq3jVXGXmFHD3vzAoAKP/9k=" alt="The desktop design: a top bar, a centred video card with a floating player beneath it, and a horizontal queue strip along the bottom.">
+        <span>Desktop &middot; 1440 × 1024</span>
+      </figure>
+      <figure class="shot" style="margin:0">
+        <img src="data:image/jpeg;base64,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" alt="The mobile design: a dedication heading, a tilted polaroid frame, a stacked player card, and a vertical queue.">
+        <span>Mobile &middot; 390 px</span>
+      </figure>
+    </div>
+
+    <dl class="factbar">
+      <div class="fact"><dt>Built with</dt><dd>TypeScript</dd></div>
+      <div class="fact"><dt>Hosted on</dt><dd>Netlify</dd></div>
+      <div class="fact"><dt>Time needed</dt><dd>About an afternoon</dd></div>
+      <div class="fact"><dt>Running cost</dt><dd>Free tier</dd></div>
+    </dl>
+  </header>
+
+  <nav class="contents" aria-label="Contents">
+    <h2>Steps</h2>
+    <ol class="toc">
+      <li><span class="num">Start</span><a href="#what">What you are building</a></li>
+      <li><span class="num">Step 1</span><a href="#design">Generate the two designs</a></li>
+      <li><span class="num">Step 2</span><a href="#folder">Create the project folder</a></li>
+      <li><span class="num">Step 3</span><a href="#spec">Write SPEC.md</a></li>
+      <li><span class="num">Step 4</span><a href="#build">Build the application</a></li>
+      <li><span class="num">Step 5</span><a href="#local">Run it on your machine</a></li>
+      <li><span class="num">Step 6</span><a href="#configure">Add your music and pictures</a></li>
+      <li><span class="num">Step 7</span><a href="#github">Put the code on GitHub</a></li>
+      <li><span class="num">Step 8</span><a href="#netlify">Deploy to Netlify</a></li>
+      <li><span class="num">Step 9</span><a href="#share">Share the link</a></li>
+      <li><span class="num">Then</span><a href="#use">What to do with it</a></li>
+      <li><span class="num">Ref</span><a href="#reference">Commands and settings</a></li>
+    </ol>
+  </nav>
+
+  <!-- WHAT -->
+  <section class="sec" id="what">
+    <div class="rail"><span class="n">Start</span><span class="note">The finished<br>product</span></div>
+    <div class="body">
+      <h2>What you are building</h2>
+      <p class="lede">One page, two modes. Visitors see a music player and nothing else. You see the same page plus a settings button — but only when you add a secret passcode to the web address.</p>
+
+      <p>The songs come from YouTube, so there is no music to upload or license. You paste a link, the title and artist arrive automatically, and the video plays inside the page. You can set your own background photograph, a picture for the frame, and the dedication at the top.</p>
+
+      <p>There is no login, no sign-up, and no database. Anyone you send the link to just opens it and presses play.</p>
+
+      <h3>Working example</h3>
+      <p>The finished code is public, and you can read every file in it:</p>
+      <p><a href="https://github.com/ritu-dadhwal4/music-page"><strong>github.com/ritu-dadhwal4/music-page</strong></a></p>
+      <p>If you would rather skip to the end, you can fork that repository and jump straight to <a href="#netlify">Step 8</a>. Everything before that describes how it was made, so you can change it rather than only copy it.</p>
+
+      <h3>What you need first</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Thing</th><th>Why</th><th>Cost</th></tr></thead>
+          <tbody>
+            <tr><td class="k">Google Flow</td><td>Generates the two design images</td><td>Included with a Google account</td></tr>
+            <tr><td class="k">Node.js 20+</td><td>Runs the site on your machine</td><td>Free</td></tr>
+            <tr><td class="k">Claude Code</td><td>Writes the application from your spec</td><td>Subscription</td></tr>
+            <tr><td class="k">GitHub</td><td>Stores the code; Netlify deploys from it</td><td>Free</td></tr>
+            <tr><td class="k">Netlify</td><td>Hosts the live site and stores your settings</td><td>Free tier is enough</td></tr>
+            <tr><td class="k">YouTube API key</td><td>Optional — shows song lengths</td><td>Free</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="sec" id="design">
+    <div class="rail"><span class="n">Step 1</span><span class="note">Google Flow</span></div>
+    <div class="body">
+      <h2>Generate the two designs</h2>
+      <p class="lede">Open Google Flow and run the two prompts below <em>separately</em>. Each one produces a single image. Save them, because the next steps depend on them.</p>
+
+      <div class="callout">
+        <p><strong>Run two prompts, not one.</strong> Do not ask for "a responsive music player." Ask for a desktop screen, then ask for a mobile screen. Each is then composed for its own shape — a wide screen wants a horizontal strip of songs along the bottom, a phone wants a vertical list. One prompt stretched across both gives you a design that fits neither properly.</p>
+      </div>
+
+      <p>Both prompts below are the finished versions. They already specify 16:9 picture frames everywhere, because YouTube videos are 16:9 — asking for square frames produces a design that puts black bars above and below every video once it is real. Use them exactly as written.</p>
+
+      <h3>Prompt 1 — the desktop screen</h3>
+      <p>Save the result as <code>design/desktop.png</code>.</p>
+
+      <div class="prompt wide">
+        <div class="prompt-head"><strong>Desktop design prompt</strong><span>1440 × 1024</span></div>
+        <div class="prompt-body">Design a premium desktop web interface for a personalised music playlist called "Nostalgia."
+
+Create a single-page, full-screen music player with a warm, cinematic, vintage aesthetic. The design should feel like a personal digital mixtape made for someone special—not like Spotify, a dashboard, or a generic streaming platform.
+
+CANVAS AND STYLE
+· Desktop viewport: 1440 × 1024 px.
+· Use a warm ivory, cream, beige, taupe, and burnt-orange color palette.
+· Main background: soft ivory with very subtle peach, beige, and golden blurred gradients.
+· Add a small amount of warm film grain.
+· Use dark espresso brown for primary text and muted taupe for secondary text.
+· Accent color: burnt orange, approximately #C96322.
+· Use an elegant editorial serif font for branding and important song titles.
+· Use a clean modern sans-serif font for secondary information and controls.
+· Keep the interface spacious, minimal, refined, and nostalgic.
+· Use thin borders, soft shadows, rounded corners, and translucent off-white surfaces.
+· Do not add a sidebar, search bar, login buttons, navigation links, advertisements, dark mode, or unrelated content.
+
+HEADER
+Create a slim header approximately 72 px high across the top.
+· Place the word "Nostalgia" on the left with approximately 56 px horizontal padding.
+· Use an elegant black serif logotype, around 27 px.
+· Add a thin, short, light-beige vertical divider immediately after the word.
+· After the divider, show the line "CHEERS TO OUR 10 YEARS OF FRIENDSHIP" in a small italic serif, uppercase, with wide letter spacing, in muted taupe.
+· Keep the rest of the header empty.
+· Use a slightly lighter cream background than the main page.
+
+MAIN STAGE
+Below the header, create a large centred stage that occupies all remaining space above the playlist queue.
+· At its centre, place a large video card in a 16:9 landscape ratio, approximately 640 px wide.
+· Give the card a dark espresso surround about 12 px thick, rounded corners of roughly 18 px, and a soft diffused shadow.
+· Inside the card, show a warm golden-hour music video still.
+· The card must be 16:9. Do not make it square, and do not letterbox the picture inside it.
+· Keep the surrounding stage calm and mostly empty — the warm gradient background, and nothing competing with the video card.
+
+FLOATING MUSIC PLAYER
+Directly below the video card, overlay a horizontal music-player card that slightly overlaps the lower edge of the video card's frame.
+· Card size: approximately 660 × 190 px.
+· Use a translucent warm-white surface with a thin white border.
+· Border radius: approximately 18 px.
+· Add a soft, diffused shadow.
+· The player card must not cover the video picture itself — only the frame beneath it.
+· Keep all content precisely aligned and uncluttered.
+
+Top row of the player:
+· On the far left, show a small album thumbnail in a 16:9 landscape ratio, approximately 72 × 41 px, with rounded corners.
+· Beside it, show the song title "1901 (Acoustic French Wave)" in a bold serif font.
+· Truncate the title with an ellipsis if needed.
+· Under it, show "Phoenix / Summer Sunset Re-edit" in smaller muted sans-serif text.
+· On the right, add controls in this order: Shuffle; Previous track inside a small pale circular button; Large burnt-orange circular Play button; Next track inside a small pale circular button; Repeat.
+· Use simple outlined icons.
+· The orange Play button should be the visual focus and have a subtle shadow.
+
+Progress section:
+· Place a full-width audio progress slider under the top row.
+· The completed portion should be burnt orange.
+· The remaining portion should be light beige-grey.
+· Add a small dark circular slider handle with a thin light outline.
+· Show "1:24" below the left side and "3:48" below the right side using small monospaced text.
+
+Bottom row:
+· On the right, add a speaker icon and a short volume slider.
+· Use burnt orange for the filled volume level and pale beige for the remainder.
+
+BOTTOM PLAYLIST QUEUE
+Create a fixed horizontal queue panel across the entire bottom of the screen.
+· Height: approximately 120 px.
+· Background: warm translucent white.
+· Add a faint top border.
+· Add approximately 36 px horizontal padding.
+· The queue should look like a horizontal carousel.
+
+At the far left:
+· Add a small queue icon in muted taupe.
+· Show the uppercase label "UP NEXT."
+· Beside it, show a small rounded pill containing the number "5."
+· Add a thin vertical divider after this section.
+
+Display five horizontal track cards:
+1. "1901 (Acoustic)" — "Phoenix / Summer" — 3:48
+2. "The Drifter's Path" — "Sarah Jenkins" — 4:18
+3. "Golden Hour Daze" — "Aurora Skies" — 3:32
+4. "Drifting Coast" — "Aurora Halo" — 4:05
+5. "Cassette Reverie" — "Miles &amp; The Echo" — 3:49
+
+Each track card must include:
+· An album cover in a 16:9 landscape ratio, approximately 80 × 45 px, with rounded corners. These must not be square.
+· Song title.
+· Artist name underneath.
+· Duration aligned to the right.
+· A light cream background.
+· Rounded corners and a very subtle border.
+
+Highlight the currently selected first track using:
+· A slightly peach-tinted background.
+· A thin burnt-orange border.
+· Orange song-title text.
+
+Fade the right edge of the queue so it is clear more cards continue off screen.
+
+INTERACTIONS
+Create realistic prototype states for:
+· Play and pause.
+· Previous and next track.
+· Shuffle and repeat.
+· Audio progress.
+· Volume adjustment.
+· Clicking a song in the queue changes the active track.
+· The active song card receives the orange highlight.
+· Album artwork, song title, artist, timing, and player state update together.
+
+The final screen must look like a polished, personal, nostalgic music experience built around a single large video card on a calm warm stage.</div>
+        <p class="scroll-hint">Scroll inside the block for the full prompt</p>
+      </div>
+
+      <h3>Prompt 2 — the mobile screen</h3>
+      <p>Save the result as <code>design/mobile.png</code>.</p>
+
+      <div class="prompt wide">
+        <div class="prompt-head"><strong>Mobile design prompt</strong><span>390 px wide</span></div>
+        <div class="prompt-body">Design a premium mobile screen for a personalized music playlist called "Nostalgia." It is a heartfelt digital mixtape created as a gift for a best friend.
+
+Create a vertically scrolling, single-page mobile music player. The design must feel warm, personal, cinematic, nostalgic, and handcrafted—not like Spotify or a generic music application.
+
+CANVAS AND VISUAL STYLE
+· Mobile viewport: 390 px wide.
+· Create a long, vertically scrollable screen.
+· Background: soft warm ivory, approximately #FAF5ED.
+· Add extremely subtle peach gradients and warm film grain.
+· Main text: dark espresso brown.
+· Secondary text: muted warm grey.
+· Accent color: burnt orange, approximately #C96322.
+· Use an elegant editorial serif font for the dedication and song title.
+· Use a clean sans-serif font for controls and playlist information.
+· Use a small monospaced font for track times and labels.
+· Keep the layout centred, spacious, refined, and sentimental.
+· Use soft shadows, thin borders, off-white cards, and rounded corners.
+· Do not add a standard navigation bar, sidebar, search, account profile, advertisements, footer, or unrelated controls.
+
+DEDICATION HEADER
+At the top, leave approximately 55 px of breathing room.
+· Centre the large serif heading: "For my best friend"
+· Use dark brown text, approximately 34 px, with an elegant editorial appearance.
+· Directly underneath, add the uppercase subtitle: "CHEERS TO OUR 10 YEARS OF FRIENDSHIP"
+· Use a smaller italic serif font.
+· Increase letter spacing.
+· Use muted taupe text.
+· Keep both lines perfectly centred.
+
+MEMORY PHOTO
+Below the dedication, place a Polaroid-style memory card.
+· Width: approximately 285 px.
+· Slightly rotate it by about -2 degrees.
+· Use a thick off-white Polaroid frame, with a wider border along the bottom edge than the other three sides.
+· Add a soft shadow and rounded outer corners.
+· The picture window inside the frame must be a 16:9 landscape rectangle, not a square. This window will later hold a video, and a square window would put black bars above and below it.
+· Inside the window, display a warm golden-hour photograph of two best friends sitting outdoors, laughing together while one plays an acoustic guitar.
+· Use cinematic sunset lighting, warm amber tones, and subtle vintage grain.
+· Make the picture feel like an authentic memory rather than a stock photograph.
+· On the wide lower border, write "Golden Hour Daze – 2009" in a handwritten style.
+· Do not place any button or floating UI over the faces.
+
+MAIN PLAYER CARD
+Below the photo, create a large music-player card with comfortable spacing from the image.
+· Use almost the full mobile width with approximately 20 px side margins.
+· Background: warm white.
+· Border radius: approximately 22 px.
+· Add a thin warm-grey border and a soft shadow.
+· Add generous internal padding.
+
+At the top of the player:
+· Centre the song title "Golden Hour Daze" in a large dark-brown serif font.
+· Under it, centre "AURORA SKIES" in small uppercase italic serif text with wide letter spacing and muted taupe color.
+
+Progress section:
+· Add a wide horizontal progress bar.
+· The completed portion should be burnt orange.
+· The remaining portion should be pale beige-grey.
+· Use a medium orange circular scrubber.
+· Show "0:28" below the left side and "3:32" below the right side using monospaced grey text.
+
+Playback controls:
+Create a centred row containing five controls: Shuffle icon; Previous track inside a pale circular button; Large burnt-orange circular Pause button; Next track inside a pale circular button; Repeat icon.
+· Make the centre Pause button the largest element.
+· Give it a soft orange shadow.
+· Use white pause bars.
+· Use dark warm-grey icons for the other controls.
+· Every control should look comfortably large enough to tap with a thumb.
+
+Volume:
+· Add a pale rounded volume-control container beneath the playback controls.
+· Put a low-volume speaker icon on the left.
+· Add a horizontal slider in the centre.
+· Use a burnt-orange circular volume knob positioned around 75%.
+· Put a high-volume speaker icon on the right.
+
+QUEUE HEADER
+Below the player card, create a row with:
+· "UP NEXT" in uppercase muted-grey text on the left.
+· A small rounded taupe pill beside it containing "5 tracks."
+
+PLAYLIST
+Create five vertically stacked rounded track cards:
+1. "1901 (Acoustic French Wave)" — Phoenix — currently playing
+2. "The Drifter's Path" — Sarah Jenkins — 4:18
+3. "Golden Hour Daze" — Aurora Skies — 3:32
+4. "Drifting Coast" — Aurora Halo — 4:05
+5. "Cassette Reverie" — Miles &amp; The Echo — 3:49
+
+Each card should include:
+· An album cover on the left in a 16:9 landscape ratio, approximately 96 × 54 px. These must not be square or cropped.
+· The track title in medium-weight dark-brown text.
+· The artist name underneath in smaller muted-grey text.
+· The track duration aligned vertically in the centre on the right.
+· Warm off-white background.
+· Rounded corners of approximately 16 px.
+· A subtle shadow or fine border.
+· Consistent spacing between cards.
+
+Highlight the first track as the currently playing song:
+· Use a very light peach background.
+· Make the artist name burnt orange.
+· Replace the duration with the uppercase orange label "NOW."
+
+INTERACTIONS
+Create realistic prototype states for:
+· Play and pause.
+· Previous and next track.
+· Shuffle and repeat.
+· Scrubbing through a song.
+· Adjusting the volume.
+· Selecting any of the five playlist cards.
+· Updating the song title, artist, album artwork, duration, active card, and playback state when a new track is selected.
+· Keep the audio player visible in the natural page flow; do not turn it into a sticky bottom navigation bar.
+
+The final screen should feel like an intimate musical gift celebrating ten years of friendship, with a sophisticated vintage-editorial design and a highly polished mobile experience.</div>
+        <p class="scroll-hint">Scroll inside the block for the full prompt</p>
+      </div>
+
+      <h3>Making them your own</h3>
+      <p>Change the dedication, the subtitle and the song names to yours. Change <code>#C96322</code> if you want a different accent colour. Keep the structure, the pixel sizes and the 16:9 instructions — those are what make the design buildable.</p>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="sec" id="folder">
+    <div class="rail"><span class="n">Step 2</span><span class="note">Project folder</span></div>
+    <div class="body">
+      <h2>Create the project folder</h2>
+      <p class="lede">Make a folder, put the two design images inside it, and open it in your terminal.</p>
+
+      <div class="cmd"><span class="p">$</span> <b>mkdir music-page</b>
+<span class="p">$</span> <b>cd music-page</b>
+<span class="p">$</span> <b>mkdir design</b></div>
+
+      <p>Move the two images you generated into the <code>design</code> folder, named exactly like this:</p>
+
+      <div class="tree"><b>music-page/</b>
+└── <b>design/</b>
+    ├── desktop.png   <i>← from prompt 1</i>
+    └── mobile.png    <i>← from prompt 2</i></div>
+
+      <p>That is the whole folder for now. The next step adds one more file, and after that the application gets written into it.</p>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="sec" id="spec">
+    <div class="rail"><span class="n">Step 3</span><span class="note">SPEC.md<br>the brief</span></div>
+    <div class="body">
+      <h2>Write SPEC.md</h2>
+      <p class="lede">Create a file called <code>SPEC.md</code> in the folder. This is the single most important step. The images show what the product looks like; this file says what it does.</p>
+
+      <div class="callout">
+        <p><strong>Why this file decides everything.</strong> A picture cannot tell you what happens when a song is deleted from YouTube, what the progress bar shows before the song length is known, or what a stranger sees if they guess your settings address. If you skip this file and just say "build this design," you get something that looks right and behaves unpredictably. Write the answers down first — it takes twenty minutes and saves hours.</p>
+      </div>
+
+      <h3>The eleven sections to write</h3>
+      <p>Cover each of these. Be specific and use real numbers.</p>
+
+      <ol class="spec">
+        <li><span class="sn">1</span><span><span class="st">Stack</span><span class="sd">Name the technologies so they are not chosen for you at random: Next.js with TypeScript, Tailwind CSS, Netlify Blobs for storage, deployed on Netlify. State plainly: no database, no login system, no component library.</span></span></li>
+        <li><span class="sn">2</span><span><span class="st">The two modes</span><span class="sd">One site, two views. The plain address shows the player only — no settings button, no hint that editing exists. The address with <code>?edit=YOUR_PASSCODE</code> shows the same page plus a settings gear. Say that the passcode is checked on the server for every save, and that a wrong passcode must render the ordinary public page with no error — an error message tells a stranger they found the right parameter.</span></span></li>
+        <li><span class="sn">3</span><span><span class="st">Data model</span><span class="sd">Exactly what is stored: for each song an id, a YouTube video id, a title, an artist, a thumbnail and a length that may be unknown; and for the page a title, a subtitle, a photo, a caption, two backgrounds, an overlay strength, a text colour setting, and the list of songs. Say the play order <em>is</em> the list order, not a separate numbering — a separate number goes wrong the first time you delete a song from the middle.</span></span></li>
+        <li><span class="sn">4</span><span><span class="st">Endpoints</span><span class="sd">Four addresses the site talks to internally: read settings, save settings, look up a YouTube link, and upload an image. For each, say who is allowed to call it and what it rejects.</span></span></li>
+        <li><span class="sn">5</span><span><span class="st">The mobile screen</span><span class="sd">Describe it top to bottom against your image: dedication, polaroid frame holding the video, player card, then the song list. Say the video must stay visible and never be hidden while it plays, and that list thumbnails are 16:9 at 96 × 54, never cropped square.</span></span></li>
+        <li><span class="sn">6</span><span><span class="st">The desktop screen</span><span class="sd">State clearly that this is a different layout, not the mobile one widened: a top bar, a centred video card with the player floating below it, and a horizontal song strip pinned to the bottom. Say the two screens share the same player code — only the arrangement differs.</span></span></li>
+        <li><span class="sn">7</span><span><span class="st">Player behaviour</span><span class="sd">One player, reused for every song. The page opens paused — never try to autoplay, because phones block it and a silent failure looks broken. At the end of a song, move to the next. If a video will not play, skip it and show a small notice rather than freezing.</span></span></li>
+        <li><span class="sn">8</span><span><span class="st">Settings panel</span><span class="sd">A panel that slides in, with a Music tab and an Appearance tab. Songs are reordered with up and down arrows, not by dragging — dragging on a phone is fiddly. Deleting asks for confirmation inside the row. Changes preview live but only save when Publish is pressed, and closing with unsaved changes warns first.</span></span></li>
+        <li><span class="sn">9</span><span><span class="st">Device rules</span><span class="sd">Design targets of 390 px on a phone and 1440 px on a desktop. Every button at least 44 × 44 px so it can be tapped. Check short laptop screens around 700 px tall, so the layout shrinks rather than pushing the song strip off the bottom.</span></span></li>
+        <li><span class="sn">10</span><span><span class="st">Settings you supply</span><span class="sd">Two: <code>EDIT_KEY</code>, your passcode, required. And <code>YOUTUBE_API_KEY</code>, optional, which turns on song lengths.</span></span></li>
+        <li><span class="sn">11</span><span><span class="st">Build order</span><span class="sd">The order to build in, and this one matters. Storage and settings first, then the mobile screen, then the player. Get those three working before starting the desktop screen — the player is the part most likely to need reworking, and reworking it across two screens is wasted effort.</span></span></li>
+      </ol>
+
+      <h3>Three details worth copying word for word</h3>
+      <p>These three lines prevent the three most annoying problems, and none of them are obvious:</p>
+
+      <h4>On thumbnails</h4>
+      <p>"Do not store the thumbnail address YouTube gives back. It points at a 4:3 image with black bars built into the picture. Build the address from the video id instead, and fall back to the smaller size when the large one does not exist."</p>
+
+      <h4>On the wrong passcode</h4>
+      <p>"If the passcode is present but wrong, render the public page exactly as if it were absent. Do not show an error."</p>
+
+      <h4>On the two screens</h4>
+      <p>"These are two distinct layouts, not one responsive layout. Build them as separate components sharing the same data and the same player logic."</p>
+
+      <p>You can read the complete file used for this project in the repository: <a href="https://github.com/ritu-dadhwal4/music-page/blob/main/SPEC.md">SPEC.md</a>. Copy it and edit it rather than starting from a blank page.</p>
+    </div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="sec" id="build">
+    <div class="rail"><span class="n">Step 4</span><span class="note">Claude Code</span></div>
+    <div class="body">
+      <h2>Build the application</h2>
+      <p class="lede">Open the folder in Claude Code and hand it the spec and the two images.</p>
+
+      <div class="cmd"><span class="p">$</span> <b>cd music-page</b>
+<span class="p">$</span> <b>claude</b></div>
+
+      <p>Then ask for it in your own words. Something like:</p>
+
+      <div class="callout">
+        <p>Read <code>SPEC.md</code> and look at the two reference designs in <code>design/</code>. Build the application exactly as specified, following the build order in section 11. Get steps 1 to 3 working and verified before starting step 4.</p>
+      </div>
+
+      <h3>Two things to insist on</h3>
+      <p><strong>Build in the spec's order, not all at once.</strong> Storage, then the mobile screen, then the player. Look at the result yourself before the desktop screen gets built on top of it.</p>
+      <p><strong>Ask for the desktop screen to add no player logic.</strong> If it needs any, the player was not built properly the first time. It is a quick thing to check and it keeps the code from splitting into two players that drift apart.</p>
+
+      <h3>What you should end up with</h3>
+      <div class="tree"><b>music-page/</b>
+├── <b>design/</b>            <i>your two reference images</i>
+├── <b>src/lib/</b>           <i>data shapes, validation, storage, image handling</i>
+├── <b>src/player/</b>        <i>the one player, shared by both screens</i>
+├── <b>src/settings/</b>      <i>the settings panel and publish flow</i>
+├── <b>src/components/</b>    <i>mobile/ and desktop/ hold each layout</i>
+├── SPEC.md
+├── package.json
+└── netlify.toml         <i>added in step 8</i></div>
+    </div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="sec" id="local">
+    <div class="rail"><span class="n">Step 5</span><span class="note">Run locally</span></div>
+    <div class="body">
+      <h2>Run it on your machine</h2>
+      <p class="lede">Three commands. The third one starts the site and leaves it running.</p>
+
+      <h4>Install the dependencies</h4>
+      <div class="cmd"><span class="p">$</span> <b>npm install</b></div>
+
+      <h4>Set your passcode</h4>
+      <p>Create a file named <code>.env.local</code> holding your secret. Choose something long and random — this is the only thing standing between a stranger and editing your page.</p>
+      <div class="cmd"><span class="c"># replace with your own long, random passcode</span>
+<span class="p">$</span> <b>echo 'EDIT_KEY=my-long-random-passcode-9f2b' &gt; .env.local</b></div>
+
+      <p>Optional — add a YouTube API key on a second line to show song lengths. Without it, lengths appear as <code>--:--</code> until each song loads.</p>
+      <div class="cmd"><span class="p">$</span> <b>echo 'YOUTUBE_API_KEY=your-key-here' &gt;&gt; .env.local</b></div>
+
+      <h4>Start it</h4>
+      <div class="cmd"><span class="p">$</span> <b>npm run dev</b>
+
+<span class="c">  ▲ Next.js — ready in 157ms</span>
+<span class="c">  Local:  http://localhost:3000</span></div>
+
+      <p>Open <code>http://localhost:3000</code> and you should see the player. To get the settings gear, add your passcode to the address:</p>
+
+      <div class="cmd">http://localhost:3000/?edit=<b>my-long-random-passcode-9f2b</b></div>
+
+      <h3>Check these before going further</h3>
+      <ol class="walk">
+        <li><strong>Press play.</strong> A song should start. This is the single most important check, and the easiest one to postpone.</li>
+        <li><strong>Press pause, skip forward, skip back, drag the progress bar, move the volume.</strong> All five.</li>
+        <li><strong>Let a song finish.</strong> The next one should start on its own.</li>
+        <li><strong>Narrow the window below 1024 px.</strong> The layout should switch to the phone version.</li>
+        <li><strong>Open the plain address with no passcode.</strong> The gear must be gone.</li>
+      </ol>
+
+      <p>Stop the server at any time with <code>Ctrl</code> + <code>C</code>.</p>
+    </div>
+  </section>
+
+  <!-- STEP 6 -->
+  <section class="sec" id="configure">
+    <div class="rail"><span class="n">Step 6</span><span class="note">Your content</span></div>
+    <div class="body">
+      <h2>Add your music and pictures</h2>
+      <p class="lede">Open the address with your passcode and click the gear in the top-right corner.</p>
+
+      <h3>Music tab</h3>
+      <p>Paste a YouTube link and press Add. All of these work, including with extra bits on the end:</p>
+      <div class="cmd">https://www.youtube.com/watch?v=VIDEO_ID
+https://youtu.be/VIDEO_ID
+https://youtube.com/shorts/VIDEO_ID</div>
+      <p>The title and artist fill in automatically and you can edit both. Reorder with the arrows. Delete with the bin icon, which asks first. If a video is private or has been taken down, you are told when you add it — not after you have sent the link to someone.</p>
+
+      <h3>Appearance tab</h3>
+      <ul>
+        <li><strong>Backgrounds</strong> — one upright picture for phones, one wide picture for desktops. Set only one and it is used for both.</li>
+        <li><strong>Overlay darkness</strong> — darkens a busy photograph so the writing stays readable.</li>
+        <li><strong>Text</strong> — dark or light. Uploading a background suggests the right one automatically.</li>
+        <li><strong>Photo</strong> — the picture in the frame, with a step to position and crop it.</li>
+        <li><strong>Caption, page title, subtitle</strong> — the dedication text.</li>
+      </ul>
+      <p>Pictures can be JPEG, PNG or WebP up to 4 MB. They are shrunk and converted automatically, so a large photograph from a phone is fine.</p>
+
+      <h3>Press Publish</h3>
+      <p>Nothing is saved until you do. Every change previews live on the page behind the panel, and closing with unsaved changes warns you first.</p>
+    </div>
+  </section>
+
+  <!-- STEP 7 -->
+  <section class="sec" id="github">
+    <div class="rail"><span class="n">Step 7</span><span class="note">GitHub</span></div>
+    <div class="body">
+      <h2>Put the code on GitHub</h2>
+      <p class="lede">Netlify deploys from a GitHub repository, so the code needs to live there first.</p>
+
+      <div class="callout">
+        <p><strong>Check this before you push.</strong> Your <code>.env.local</code> file holds your passcode and must never be uploaded. Confirm <code>.gitignore</code> lists <code>.env.local</code>, then run <code>git status</code> and make sure it does not appear.</p>
+      </div>
+
+      <div class="cmd"><span class="p">$</span> <b>git init</b>
+<span class="p">$</span> <b>git add -A</b>
+<span class="p">$</span> <b>git status</b>   <span class="c"># .env.local must NOT be listed</span>
+<span class="p">$</span> <b>git commit -m "Music page"</b></div>
+
+      <p>Then create the repository. With the GitHub CLI it is one command:</p>
+
+      <div class="cmd"><span class="p">$</span> <b>gh repo create music-page --public --source=. --push</b></div>
+
+      <p>Or create an empty repository on github.com and connect it by hand:</p>
+
+      <div class="cmd"><span class="p">$</span> <b>git remote add origin https://github.com/YOUR-NAME/music-page.git</b>
+<span class="p">$</span> <b>git branch -M main</b>
+<span class="p">$</span> <b>git push -u origin main</b></div>
+
+      <p>Public or private both work with Netlify. This project's repository is public if you want to compare: <a href="https://github.com/ritu-dadhwal4/music-page">github.com/ritu-dadhwal4/music-page</a></p>
+    </div>
+  </section>
+
+  <!-- STEP 8 -->
+  <section class="sec" id="netlify">
+    <div class="rail"><span class="n">Step 8</span><span class="note">Deploy</span></div>
+    <div class="body">
+      <h2>Deploy to Netlify</h2>
+      <p class="lede">Netlify builds the site from your repository and hosts it. It also provides the storage the page uses for your settings and pictures, with nothing to set up.</p>
+
+      <h3>First, add a build file</h3>
+      <p>Create <code>netlify.toml</code> in the project root. Netlify can usually work this out on its own, but writing it down means the build behaves the same every time.</p>
+
+      <div class="cmd"><span class="c">[build]</span>
+  command = <b>"npm run build"</b>
+  publish = <b>".next"</b>
+
+<span class="c">[build.environment]</span>
+  NODE_VERSION = <b>"22"</b>
+
+<span class="c">[[plugins]]</span>
+  package = <b>"@netlify/plugin-nextjs"</b></div>
+
+      <p>Commit and push it:</p>
+      <div class="cmd"><span class="p">$</span> <b>git add netlify.toml &amp;&amp; git commit -m "Add Netlify config"</b>
+<span class="p">$</span> <b>git push</b></div>
+
+      <h3>Then connect the site</h3>
+      <ol class="walk">
+        <li>Sign in at <a href="https://app.netlify.com">app.netlify.com</a>.</li>
+        <li>Choose <strong>Add new site → Import an existing project</strong>.</li>
+        <li>Choose <strong>GitHub</strong> and authorise it if asked. Netlify only needs access to this one repository.</li>
+        <li>Pick your <code>music-page</code> repository from the list.</li>
+        <li>Leave the build settings as they are. Netlify reads <code>netlify.toml</code> and detects Next.js, so the build command and publish directory are already correct.</li>
+        <li><strong>Before deploying, open “Add environment variables.”</strong> This is the step people miss, and the build fails without it.</li>
+      </ol>
+
+      <h3>The environment variables</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Key</th><th>Value</th><th>Required</th></tr></thead>
+          <tbody>
+            <tr><td class="k">EDIT_KEY</td><td>Your long random passcode. Use a different one from your local file.</td><td>Yes</td></tr>
+            <tr><td class="k">YOUTUBE_API_KEY</td><td>Your YouTube Data API key, if you want song lengths.</td><td>No</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Then press <strong>Deploy</strong>. The first build takes two or three minutes. When it finishes you get an address like <code>your-site-name.netlify.app</code>, which you can rename under <strong>Site configuration → Change site name</strong>.</p>
+
+      <h3>Storage needs no setup</h3>
+      <p>The songs and pictures you add are kept in Netlify Blobs, which is switched on automatically for sites hosted on Netlify. There is no database to create, no connection string to paste, and nothing to configure.</p>
+      <p>One consequence worth knowing: the settings you added while working on your own machine do not travel to the live site. Open the live site with your passcode and add your songs there once.</p>
+
+      <h3>If the build fails</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Message</th><th>Cause</th></tr></thead>
+          <tbody>
+            <tr><td class="k">EDIT_KEY is not defined</td><td>The environment variable was not added. Add it under Site configuration → Environment variables, then Deploys → Trigger deploy.</td></tr>
+            <tr><td class="k">Module not found: sharp</td><td>Set <code>NODE_VERSION</code> to <code>22</code> in <code>netlify.toml</code> and redeploy.</td></tr>
+            <tr><td class="k">Build succeeds, page is blank</td><td>The Next.js plugin did not run. Confirm <code>netlify.toml</code> was committed and pushed.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>From now on</h3>
+      <p>Every push to <code>main</code> rebuilds and republishes the site automatically. There is no separate deploy command.</p>
+      <div class="cmd"><span class="p">$</span> <b>git add -A &amp;&amp; git commit -m "Change the dedication"</b>
+<span class="p">$</span> <b>git push</b>   <span class="c"># Netlify rebuilds on its own</span></div>
+    </div>
+  </section>
+
+  <!-- STEP 9 -->
+  <section class="sec" id="share">
+    <div class="rail"><span class="n">Step 9</span><span class="note">Share</span></div>
+    <div class="body">
+      <h2>Share the link</h2>
+      <p class="lede">Open your live site with the passcode, add your songs and pictures, and press Publish.</p>
+
+      <p>The success screen shows the address to share, and it removes the passcode for you. Copy it from there rather than from your browser bar — the two are not the same:</p>
+
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th></th><th>Address</th></tr></thead>
+          <tbody>
+            <tr><td class="k">Yours</td><td><code>your-site.netlify.app/?edit=your-passcode</code> — keep this private</td></tr>
+            <tr><td class="k">Theirs</td><td><code>your-site.netlify.app</code> — send this one</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Anyone opening the plain address sees the player and nothing else. No gear, no settings, no way in.</p>
+
+      <div class="callout">
+        <p><strong>Keep the passcode out of screenshots.</strong> It sits in the address bar while you are editing. If you are recording your screen or sharing a picture of the page, use the plain address.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- USE IT -->
+  <section class="sec" id="use">
+    <div class="rail"><span class="n">Then</span><span class="note">Put it<br>to work</span></div>
+    <div class="body">
+      <h2>What to do with it</h2>
+      <p class="lede">You now have two things worth keeping: a live site with a link, and a public repository showing how it was made. They are useful in different ways.</p>
+
+      <h3>Put it on your CV</h3>
+      <p>This is a real shipped product with a URL anyone can open — which counts for considerably more than a tutorial exercise nobody can see. It also covers unusually broad ground for one project: design, front end, back end, and deployment.</p>
+      <p>Include both links. A hiring manager who can click through to a working page and then read the code that produced it has everything they need.</p>
+
+      <h4>Bullets you can adapt</h4>
+      <div class="callout">
+        <p>Built and deployed a personalised music-sharing web application in TypeScript (Next.js, React, Tailwind), with owner-only editing gated by a server-side key and a public read-only view.</p>
+      </div>
+      <div class="callout">
+        <p>Integrated the YouTube IFrame API with custom playback controls, and implemented two structurally distinct layouts for mobile and desktop sharing a single player controller.</p>
+      </div>
+      <div class="callout">
+        <p>Worked design-first: generated reference designs from written prompts, translated them into a technical specification covering data model, endpoints and edge cases, then implemented against it and deployed continuously to Netlify.</p>
+      </div>
+
+      <p>That last one is worth keeping. Plenty of people can say they used an AI tool; far fewer can describe a repeatable process where the design, the written brief and the implementation each fed the next.</p>
+
+      <h4>What it demonstrates</h4>
+      <ul>
+        <li><strong>End-to-end delivery</strong> — idea through to a live URL, not a local demo.</li>
+        <li><strong>Full-stack TypeScript</strong> — the same language on the screen and the server.</li>
+        <li><strong>Working from a specification</strong> — writing the brief, then building to it.</li>
+        <li><strong>Third-party integration</strong> — the YouTube player and metadata lookup.</li>
+        <li><strong>Server-side media handling</strong> — uploads validated, resized and converted.</li>
+        <li><strong>Deployment</strong> — continuous deploys from a repository, with environment configuration.</li>
+      </ul>
+
+      <h3>Give it to someone</h3>
+      <p>The product was designed as a gift, and it works best as one. It costs nothing to run, needs no app, and the person receiving it just opens a link.</p>
+      <ul>
+        <li><strong>A friend</strong> — songs from the years you have known each other.</li>
+        <li><strong>A partner</strong> — an anniversary, or the songs from a particular trip.</li>
+        <li><strong>Family</strong> — your parents' wedding year, or the music your grandparents grew up with.</li>
+        <li><strong>A wedding</strong> — the playlist, with a photograph and a message, shared with everyone invited.</li>
+        <li><strong>Someone leaving</strong> — a colleague or a friend moving away, with a note in the dedication.</li>
+        <li><strong>Long distance</strong> — one page you both keep adding to.</li>
+      </ul>
+      <p>Change the dedication, the subtitle and the photo caption for each person. Each new page is a new deploy of the same code, so a second one takes minutes rather than an afternoon.</p>
+
+      <h3>Show it in a portfolio</h3>
+      <p>Screenshot both layouts side by side — the phone and the desktop views look different enough that the pair makes the point on its own. Link the live site so people can press play.</p>
+      <p>If you write anything about it, the most interesting thread is not the code. It is that writing <em>two</em> design prompts instead of one determined the entire architecture: two separate layouts meant one shared player, which shaped how the whole application is put together. That is a thirty-second decision at the start with consequences all the way through.</p>
+
+      <h3>Keep going</h3>
+      <p>The specification is in the repository, so the product is not finished — it is a starting point. Sensible next additions:</p>
+      <ul>
+        <li>More than one page per deployment, so you can make several without redeploying.</li>
+        <li>A short written note attached to each song.</li>
+        <li>A simple count of how many people opened the link.</li>
+        <li>A different colour scheme per page, chosen in the settings panel.</li>
+      </ul>
+      <p>Each of those is a change to <code>SPEC.md</code> first, and code second. That order is the habit worth taking from the whole project.</p>
+    </div>
+  </section>
+
+  <!-- REFERENCE -->
+  <section class="sec" id="reference">
+    <div class="rail"><span class="n">Ref</span><span class="note">Quick<br>reference</span></div>
+    <div class="body">
+      <h2>Commands and settings</h2>
+
+      <h4>Commands</h4>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+          <tbody>
+            <tr><td class="k">npm install</td><td>Installs everything the project needs. Run once.</td></tr>
+            <tr><td class="k">npm run dev</td><td>Starts the site on your machine at localhost:3000.</td></tr>
+            <tr><td class="k">npm run build</td><td>Builds the production version. Netlify runs this for you.</td></tr>
+            <tr><td class="k">npm test</td><td>Runs the automated checks.</td></tr>
+            <tr><td class="k">npm run typecheck</td><td>Checks for type errors without building.</td></tr>
+            <tr><td class="k">git push</td><td>Publishes your changes — Netlify rebuilds automatically.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Environment variables</h4>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Key</th><th>Where</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="k">EDIT_KEY</td><td><code>.env.local</code> and Netlify</td><td>Required. Long and random. Use different values locally and live.</td></tr>
+            <tr><td class="k">YOUTUBE_API_KEY</td><td><code>.env.local</code> and Netlify</td><td>Optional. Turns on song lengths.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Files you will edit</h4>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>File</th><th>Holds</th></tr></thead>
+          <tbody>
+            <tr><td class="k">SPEC.md</td><td>The brief. Edit this and rebuild to change how the product behaves.</td></tr>
+            <tr><td class="k">design/</td><td>Your two reference images.</td></tr>
+            <tr><td class="k">src/app/globals.css</td><td>The colours and fonts.</td></tr>
+            <tr><td class="k">src/lib/default-config.ts</td><td>The songs a brand-new site starts with.</td></tr>
+            <tr><td class="k">netlify.toml</td><td>Build settings for deployment.</td></tr>
+            <tr><td class="k">.env.local</td><td>Your passcode. Never committed.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Changing the look</h4>
+      <p>The colours live as named values in <code>src/app/globals.css</code>. Change <code>--color-primary</code> for the accent and <code>--color-surface</code> for the background, and the whole page follows — the buttons, the highlighted song, the progress bar. The fonts are set in <code>src/app/layout.tsx</code>.</p>
+    </div>
+  </section>
+
+  <p class="colophon">
+    Make a Music Page &middot; Build guide<br>
+    Google Flow → SPEC.md → Claude Code → GitHub → Netlify<br>
+    <a href="https://github.com/ritu-dadhwal4/music-page">github.com/ritu-dadhwal4/music-page</a>
+  </p>
+
+</div>

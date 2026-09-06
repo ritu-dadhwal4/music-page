@@ -1,0 +1,12 @@
+# Netlify picks Next.js up automatically, but pinning it here means the build
+# behaves the same on a teammate's fork and on a fresh deploy.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # sharp ships prebuilt binaries for this runtime; 22 is Netlify's current LTS.
+  NODE_VERSION = "22"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

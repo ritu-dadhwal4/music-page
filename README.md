@@ -13,6 +13,13 @@ Built as a digital mixtape — not a streaming dashboard.
 
 ---
 
+## Build guide
+
+**[docs/build-guide.html](docs/build-guide.html)** walks through the whole thing
+end to end — the two design prompts, what to put in `SPEC.md`, the commands to
+run it locally, deploying to Netlify, and what to do with it once it is live.
+Open the file in a browser.
+
 ## How this was made
 
 The project went design-first, in three stages.
