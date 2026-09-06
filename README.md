@@ -9,7 +9,7 @@ Built as a digital mixtape — not a streaming dashboard.
 |  |  |
 |---|---|
 | ![Mobile design](design/mobile.png) | ![Desktop design](design/desktop.png) |
-| **Mobile** — polaroid, stacked player, vertical queue | **Desktop** — vinyl stage, floating player, bottom queue strip |
+| **Mobile** — polaroid, stacked player, vertical queue | **Desktop** — centred stage, floating player, bottom queue strip |
 
 ---
 
@@ -202,8 +202,9 @@ route enforces the pattern, so a crafted name cannot reach another key.
   which makes rapid wheel input feel laggy. Smooth is kept for the
   scroll-into-view on track change, which drops to instant under
   `prefers-reduced-motion` — a JS smooth scroll ignores the CSS rule.
-- **The vinyl is clipped by its own wrapper**, so an oversized disc never adds
-  scroll to the stage. It pauses when paused and when the tab is hidden.
+- **The decorative vinyl disc was removed** after the build, by request. The
+  desktop stage now sits on the plain warm gradient. `SPEC.md` §5b still
+  describes it; the code is the source of truth here.
 
 ---
 
@@ -224,12 +225,11 @@ publish, and the unsaved-changes warning were each exercised and checked. What
 that cannot cover is feel — drag latency on the cropper, and whether the panel
 holds up with the on-screen keyboard open on a real phone.
 
-Two desktop behaviours are proven by mechanism rather than by animation, because
-a backgrounded browser pane produces no animation frames: the smooth
-scroll-into-view on track change (the identical call with `behavior: 'instant'`
-lands the card exactly in view, and the page does not scroll vertically), and
-the vinyl spin while playing (the animation is attached and correctly `paused`
-at rest and while the tab is hidden). Both want a real-browser look.
+One desktop behaviour is proven by mechanism rather than by animation, because a
+backgrounded browser pane produces no animation frames: the smooth
+scroll-into-view on track change. The identical call with `behavior: 'instant'`
+lands the card exactly in view and does not scroll the page vertically, so the
+wiring is right — but it wants a real-browser look.
 
 ---
 

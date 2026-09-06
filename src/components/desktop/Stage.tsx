@@ -1,7 +1,6 @@
 'use client';
 
 import { usePlayer } from '@/player/PlayerProvider';
-import { Vinyl } from './Vinyl';
 import { DesktopPlayerCard } from './DesktopPlayerCard';
 import { EmptyState } from '../EmptyState';
 
@@ -20,17 +19,12 @@ export function Stage({ isSettingsMode }: { isSettingsMode: boolean }) {
         ['--stage-w' as string]: 'clamp(20rem, (100dvh - 27rem) * 1.778, 40rem)',
       }}
     >
-      {/* Clipped, so the disc can overflow the stage without creating scroll. */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <Vinyl />
-      </div>
-
       {tracks.length === 0 ? (
-        <div className="relative z-10 w-full max-w-md">
+        <div className="w-full max-w-md">
           <EmptyState isSettingsMode={isSettingsMode} />
         </div>
       ) : (
-        <div className="relative z-10 flex w-full flex-col items-center">
+        <div className="flex w-full flex-col items-center">
           {/*
             The video card's own padding is the overlap budget. The control
             card below rides up by less than that padding, so it clips the

@@ -10,7 +10,7 @@ import { UpNextList } from './UpNextList';
 /**
  * Single column, top to bottom: header, polaroid, player card, up next.
  * Tablets get this same layout at a wider max-width rather than the desktop
- * structure, which needs the room for the vinyl stage.
+ * structure, which needs the room for its wider stage.
  */
 export function MobileLayout({ config, isSettingsMode }: { config: Config; isSettingsMode: boolean }) {
   const { tracks } = usePlayer();

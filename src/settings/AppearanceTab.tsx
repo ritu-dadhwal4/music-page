@@ -24,6 +24,22 @@ export function AppearanceTab({ editKey }: { editKey: string }) {
     );
   }
 
+  /**
+   * With no background left, the page falls back to the cream gradient, and
+   * light text on cream is unreadable. The light theme is only ever chosen to
+   * survive a dark photo, so removing the last photo has to take it back with
+   * it - otherwise the owner is left with an invisible title and no obvious
+   * cause.
+   */
+  function removeBackground(slot: 'mobile' | 'desktop') {
+    const remaining =
+      slot === 'mobile' ? config.backgroundDesktopUrl : config.backgroundMobileUrl;
+    update({
+      ...(slot === 'mobile' ? { backgroundMobileUrl: null } : { backgroundDesktopUrl: null }),
+      ...(remaining ? {} : { textTheme: 'dark' as const }),
+    });
+  }
+
   async function savePhoto(blob: Blob) {
     setPendingPhoto(null);
     const result = await upload(blob, 'photo', 'photo.webp');
@@ -45,14 +61,14 @@ export function AppearanceTab({ editKey }: { editKey: string }) {
             url={config.backgroundMobileUrl}
             busy={busy === 'background-mobile'}
             onPick={(file) => { clearError(); void pickBackground(file, 'background-mobile'); }}
-            onRemove={() => update({ backgroundMobileUrl: null })}
+            onRemove={() => removeBackground('mobile')}
           />
           <BackgroundSlot
             label="Desktop" hint="Landscape" aspect="16 / 9"
             url={config.backgroundDesktopUrl}
             busy={busy === 'background-desktop'}
             onPick={(file) => { clearError(); void pickBackground(file, 'background-desktop'); }}
-            onRemove={() => update({ backgroundDesktopUrl: null })}
+            onRemove={() => removeBackground('desktop')}
           />
         </div>
         {/* The fallback is deliberate, so say so rather than letting it look
