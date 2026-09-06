@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+.env
+.env.local
+.netlify
+next-env.d.ts
+*.tsbuildinfo
+.DS_Store
+
+# Claude Code session artifacts
+plugin_*/
+.claude/

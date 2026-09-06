@@ -1,0 +1,904 @@
+<!DOCTYPE html><html class="h-full overflow-hidden" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Keyframe Animations */
+    @keyframes floatSlow {
+      0%, 100% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(30px, -25px) scale(1.08); }
+      66% { transform: translate(-25px, 20px) scale(0.95); }
+    }
+    @keyframes floatSlowReverse {
+      0%, 100% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(-35px, 30px) scale(1.06); }
+      66% { transform: translate(25px, -20px) scale(0.92); }
+    }
+    @keyframes pulseAura {
+      0%, 100% { transform: scale(1); opacity: 0.45; }
+      50% { transform: scale(1.06); opacity: 0.85; }
+    }
+    @keyframes ripplePulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      100% { transform: scale(1.55); opacity: 0; }
+    }
+    @keyframes fadeUpEntrance {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes cardFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+    @keyframes spinVinyl {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Equalizer keyframes */
+    @keyframes eqDance1 { 0%, 100% { height: 3px; } 50% { height: 15px; } }
+    @keyframes eqDance2 { 0%, 100% { height: 13px; } 50% { height: 4px; } }
+    @keyframes eqDance3 { 0%, 100% { height: 6px; } 50% { height: 16px; } }
+    @keyframes eqDance4 { 0%, 100% { height: 14px; } 50% { height: 5px; } }
+
+    .anim-float-1 {
+      animation: floatSlow 22s ease-in-out infinite;
+    }
+    .anim-float-2 {
+      animation: floatSlowReverse 26s ease-in-out infinite;
+    }
+    .player-aura-active {
+      animation: pulseAura 3.5s ease-in-out infinite;
+    }
+    .ripple-active {
+      animation: ripplePulse 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+    .title-fade-in {
+      animation: fadeUpEntrance 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .subtitle-fade-in {
+      animation: fadeUpEntrance 1.1s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .card-breathing {
+      animation: cardFloat 6s ease-in-out infinite;
+    }
+
+    /* Equalizer visualizer bars */
+    .eq-bar {
+      width: 2.5px;
+      border-radius: 9999px;
+      background-color: currentColor;
+      transition: height 0.15s ease;
+    }
+    .is-playing .eq-bar:nth-child(1) { animation: eqDance1 0.75s ease-in-out infinite; }
+    .is-playing .eq-bar:nth-child(2) { animation: eqDance2 0.65s ease-in-out infinite 0.15s; }
+    .is-playing .eq-bar:nth-child(3) { animation: eqDance3 0.85s ease-in-out infinite 0.3s; }
+    .is-playing .eq-bar:nth-child(4) { animation: eqDance4 0.7s ease-in-out infinite 0.2s; }
+
+    /* Spinning disc art when playing */
+    .vinyl-spin {
+      animation: spinVinyl 16s linear infinite;
+    }
+    .vinyl-paused {
+      animation-play-state: paused;
+    }
+
+    /* Smooth custom horizontal scrolling */
+    .custom-scroll-shelf {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(194, 101, 42, 0.3) transparent;
+    }
+    .custom-scroll-shelf::-webkit-scrollbar {
+      display: block;
+      height: 4px;
+    }
+    .custom-scroll-shelf::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll-shelf::-webkit-scrollbar-thumb {
+      background: rgba(194, 101, 42, 0.25);
+      border-radius: 9999px;
+    }
+    .custom-scroll-shelf::-webkit-scrollbar-thumb:hover {
+      background: rgba(194, 101, 42, 0.5);
+    }
+
+    /* Crossfade track transition */
+    .track-switching {
+      opacity: 0;
+      transform: scale(0.96) translateY(4px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .track-ready {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .anim-float-1, .anim-float-2, .player-aura-active, .ripple-active, .title-fade-in, .subtitle-fade-in, .is-playing .eq-bar, .card-breathing, .vinyl-spin {
+        animation: none !important;
+      }
+    }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-container": "#3a2020",
+            "surface-container-low": "#f6f0e8",
+            "surface-container-high": "#ece6dc",
+            "inverse-primary": "#f0a878",
+            "error": "#c0392b",
+            "secondary": "#78706a",
+            "tertiary-container": "#d47070",
+            "secondary-fixed": "#eae2da",
+            "error-container": "#fce4e0",
+            "on-secondary-fixed": "#2a2420",
+            "tertiary-fixed-dim": "#e8a0a0",
+            "on-primary-fixed": "#401a08",
+            "outline-variant": "#d8d0c8",
+            "secondary-fixed-dim": "#cec6be",
+            "background": "#faf5ee",
+            "on-surface-variant": "#605850",
+            "on-primary-fixed-variant": "#8a4518",
+            "on-surface": "#3a302a",
+            "inverse-surface": "#3a302a",
+            "primary-container": "#e08850",
+            "outline": "#9a9088",
+            "surface-tint": "#c2652a",
+            "on-background": "#3a302a",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed": "#fce0e0",
+            "primary": "#c2652a",
+            "surface-container": "#f2ece4",
+            "surface-bright": "#faf5ee",
+            "surface-variant": "#ece6dc",
+            "on-tertiary-fixed-variant": "#6e3030",
+            "inverse-on-surface": "#faf5ee",
+            "surface": "#faf5ee",
+            "on-secondary-container": "#605850",
+            "on-error-container": "#7a1a10",
+            "on-tertiary-fixed": "#2e1515",
+            "on-primary-container": "#fbe8d8",
+            "on-error": "#ffffff",
+            "secondary-container": "#eae2da",
+            "surface-dim": "#dcd6cc",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary-fixed-variant": "#504840",
+            "on-primary": "#ffffff",
+            "primary-fixed-dim": "#f0a878",
+            "surface-container-highest": "#e6e0d6",
+            "on-tertiary": "#ffffff",
+            "primary-fixed": "#fbe8d8",
+            "tertiary": "#8c3c3c"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "headline": [
+              "EB Garamond"
+            ],
+            "display": [
+              "EB Garamond"
+            ],
+            "body": [
+              "Manrope"
+            ],
+            "label": [
+              "Manrope"
+            ]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-surface font-body text-on-surface h-screen w-screen overflow-hidden select-none relative">
+<!-- Navigation Bar -->
+<header class="fixed top-0 w-full z-40 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(58,48,42,0.04)]">
+<div class="h-14 md:h-16 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<span class="text-2xl font-headline font-medium tracking-tight text-on-surface transition-colors hover:text-primary cursor-pointer">Nostalgia</span>
+<span class="hidden sm:inline-block w-px h-4 bg-outline-variant"></span>
+</div>
+
+</div>
+</header>
+<main class="relative w-full h-full pt-14 md:pt-16 overflow-hidden flex flex-col items-center bg-gradient-to-b from-surface-container-high via-secondary-container to-surface-dim">
+<!-- Atmospheric 3D Three.js Vinyl Scene Backdrop -->
+<!-- STITCH_THREEJS_START:ANIMATION_12 class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-40" -->
+<div class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-40" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_12" style="width:100%;height:100%"><canvas width="2560" height="2048" style="display: block; width: 1280px; height: 1024px;"></canvas></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_12');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  // Tier 4 Three.js Interactive Floating Vinyl Record & Soundwave Particles
+const width = container.clientWidth || window.innerWidth;
+const height = container.clientHeight || window.innerHeight;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+camera.position.set(0, 0, 18);
+
+const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+renderer.setSize(width, height);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+container.appendChild(renderer.domElement);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffeedd, 1.2);
+scene.add(ambientLight);
+
+const warmPoint = new THREE.PointLight(0xd97736, 2.5, 40);
+warmPoint.position.set(10, 8, 12);
+scene.add(warmPoint);
+
+const softRim = new THREE.PointLight(0xfef3c7, 1.5, 30);
+softRim.position.set(-10, -6, 10);
+scene.add(softRim);
+
+// Group to hold vinyl record and ambient rings
+const playerGroup = new THREE.Group();
+playerGroup.position.set(0, -0.2, 0);
+scene.add(playerGroup);
+
+// Vinyl disc (grooved dark phonograph record with warm sheen)
+const vinylGeo = new THREE.CylinderGeometry(5.2, 5.2, 0.12, 64);
+const vinylMat = new THREE.MeshStandardMaterial({
+  color: 0x1a1614,
+  roughness: 0.35,
+  metalness: 0.25,
+});
+const vinylDisc = new THREE.Mesh(vinylGeo, vinylMat);
+vinylDisc.rotation.x = Math.PI / 3.8;
+vinylDisc.rotation.z = -Math.PI / 12;
+playerGroup.add(vinylDisc);
+
+// Center vinyl label (warm terracotta retro label)
+const labelGeo = new THREE.CylinderGeometry(2.1, 2.1, 0.14, 48);
+const labelMat = new THREE.MeshStandardMaterial({
+  color: 0xc2652a,
+  roughness: 0.5,
+  metalness: 0.1,
+});
+const vinylLabel = new THREE.Mesh(labelGeo, labelMat);
+vinylDisc.add(vinylLabel);
+
+// Spindle hole
+const centerHoleGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.16, 24);
+const centerHoleMat = new THREE.MeshBasicMaterial({ color: 0x0a0908 });
+const centerHole = new THREE.Mesh(centerHoleGeo, centerHoleMat);
+vinylDisc.add(centerHole);
+
+// Subtle vinyl grooves ring highlights
+const grooveMat = new THREE.MeshBasicMaterial({ color: 0x3d322c });
+for (let r = 2.6; r <= 4.8; r += 0.45) {
+  const ringGeo = new THREE.RingGeometry(r, r + 0.04, 48);
+  const ring = new THREE.Mesh(ringGeo, grooveMat);
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.y = 0.07;
+  vinylDisc.add(ring);
+}
+
+// Floating golden soundwave particle cloud
+const particleCount = 120;
+const particleGeo = new THREE.BufferGeometry();
+const particlePos = new Float32Array(particleCount * 3);
+const particleOriginalY = new Float32Array(particleCount);
+
+for (let i = 0; i < particleCount; i++) {
+  const angle = (i / particleCount) * Math.PI * 2;
+  const rad = 6.2 + Math.random() * 3.5;
+  particlePos[i * 3] = Math.cos(angle) * rad + (Math.random() - 0.5) * 1.5;
+  const y = (Math.random() - 0.5) * 3.0;
+  particlePos[i * 3 + 1] = y;
+  particleOriginalY[i] = y;
+  particlePos[i * 3 + 2] = Math.sin(angle) * rad * 0.4;
+}
+particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
+
+const particleMat = new THREE.PointsMaterial({
+  color: 0xd97736,
+  size: 0.22,
+  transparent: true,
+  opacity: 0.55,
+  blending: THREE.AdditiveBlending
+});
+const particles = new THREE.Points(particleGeo, particleMat);
+playerGroup.add(particles);
+
+// Mouse tracking interaction
+let targetRotX = 0;
+let targetRotY = 0;
+let currentRotX = 0;
+let currentRotY = 0;
+
+function onMouseMove(e) {
+  const normX = (e.clientX / window.innerWidth) * 2 - 1;
+  const normY = -(e.clientY / window.innerHeight) * 2 + 1;
+  targetRotY = normX * 0.35;
+  targetRotX = normY * 0.25;
+}
+window.addEventListener('mousemove', onMouseMove);
+
+// Animation render loop
+let clock = new THREE.Clock();
+let isSpinning = true;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const elapsedTime = clock.getElapsedTime();
+
+  if (isSpinning) {
+    vinylDisc.rotation.y += 0.012;
+  }
+
+  // Smooth mouse tilt parallax
+  currentRotX += (targetRotX - currentRotX) * 0.05;
+  currentRotY += (targetRotY - currentRotY) * 0.05;
+
+  playerGroup.rotation.x = currentRotX + Math.sin(elapsedTime * 0.8) * 0.04;
+  playerGroup.rotation.y = currentRotY + Math.cos(elapsedTime * 0.6) * 0.05;
+  playerGroup.position.y = -0.2 + Math.sin(elapsedTime * 1.2) * 0.25;
+
+  // Gently wave particles
+  const positions = particleGeo.attributes.position.array;
+  for (let i = 0; i < particleCount; i++) {
+    positions[i * 3 + 1] = particleOriginalY[i] + Math.sin(elapsedTime * 2.0 + i) * 0.3;
+  }
+  particleGeo.attributes.position.needsUpdate = true;
+
+  renderer.render(scene, camera);
+}
+animate();
+
+// Responsive resize
+function onWindowResize() {
+  const newW = container.clientWidth || window.innerWidth;
+  const newH = container.clientHeight || window.innerHeight;
+  camera.aspect = newW / newH;
+  camera.updateProjectionMatrix();
+  renderer.setSize(newW, newH);
+}
+window.addEventListener('resize', onWindowResize);
+
+})();
+</script>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_12 -->
+<!-- Atmospheric Floating Bokeh Orbs -->
+<div class="absolute inset-0 pointer-events-none opacity-40 mix-blend-soft-light bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary-fixed via-secondary to-on-surface"></div>
+<div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-primary/15 blur-3xl pointer-events-none anim-float-1"></div>
+<div class="absolute -bottom-24 -right-24 w-[30rem] h-[30rem] rounded-full bg-surface-tint/20 blur-3xl pointer-events-none anim-float-2"></div>
+<div class="absolute top-1/3 left-1/4 w-72 h-72 rounded-full bg-primary-fixed-dim/20 blur-3xl pointer-events-none anim-float-1" style="animation-delay: -7s;"></div>
+<div class="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full bg-tertiary-fixed-dim/15 blur-3xl pointer-events-none anim-float-2" style="animation-delay: -12s;"></div>
+<!-- Main Heading Section with Staggered Entrance -->
+<div class="relative z-10 flex flex-col items-center justify-center text-center px-4 max-w-4xl pointer-events-none pt-14 title-fade-in" style="margin-top: 12vh;">
+<h1 class="font-headline text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-semibold tracking-tight text-on-surface drop-shadow-[0_12px_24px_rgba(58,48,42,0.18)] leading-none mb-3 transition-transform duration-700 hover:scale-[1.01]">For my</h1>
+<span class="font-headline italic text-4xl sm:text-6xl md:text-7xl text-primary font-medium drop-shadow-[0_6px_16px_rgba(194,101,42,0.2)] subtitle-fade-in">best friend</span>
+<div class="mt-6 flex items-center gap-3 text-xs tracking-widest uppercase text-on-surface-variant/70 font-medium subtitle-fade-in">
+<span class="">Cheers to our 10 years of friendship</span>
+<span class="w-1.5 h-1.5 rounded-full bg-outline/60 animate-ping" style="animation-duration: 3s;"></span>
+<span class="w-1 h-1 rounded-full bg-outline"></span>
+</div>
+</div>
+<!-- Player Card Container with Vinyl/Cassette Ambient Glow and Breathing Effect -->
+<div class="z-30 w-full max-w-xl px-4 pointer-events-auto relative mt-6 card-breathing">
+<!-- Ambient Breathing Glow behind Card -->
+<div class="absolute -inset-2 rounded-3xl bg-gradient-to-r from-primary/30 via-primary-container/35 to-surface-tint/30 blur-2xl opacity-0 transition-opacity duration-700 pointer-events-none" id="player-glow"></div>
+<div class="relative bg-surface/90 backdrop-blur-2xl rounded-2xl p-4 sm:p-5 shadow-[0_16px_45px_rgba(58,48,42,0.18)] border border-white/60 flex flex-col gap-3.5 transition-all duration-300 hover:shadow-[0_22px_55px_rgba(58,48,42,0.22)]" id="main-player-card">
+<div class="flex items-center justify-between gap-4">
+<div class="flex items-center gap-3.5 min-w-0 track-ready" id="track-meta-container">
+<!-- Disc art with spinning animation when active -->
+<div class="relative w-12 h-12 sm:w-13 sm:h-13 rounded-xl overflow-hidden shadow-md flex-shrink-0 group cursor-pointer border border-black/5" id="art-wrapper">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A sun-soaked warm photographic polaroid of a retro living room in late afternoon light with vintage speakers, wooden furniture, and warm sienna cinematic glow from the late 2000s era." id="track-artwork" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdoS-zASUkMF0gzhdiuD93z9HzXJlMkpbvVF1kpPI6Ls4162wanoZBfAEgMouOh2BYdQrgxD6u6CMDaLkl_xRrj_OHP8p9D10rsXBh_jcNR7B9nuL3CQxiaNp-fGDJRR-Bfpw8k-5PMjhkg_WBIg8NGnXfG7dvxRwtOm-30y8hstjbDsLCEo_btIqt3bSuRyiLlhAA140lKP3GjEsLWTsOoB0QquVJ7twiJQjFkaFsZ3TMeelZVBeeoQ">
+<div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+<!-- Subtle vinyl center spindle dot -->
+<div class="absolute inset-0 m-auto w-2.5 h-2.5 rounded-full bg-white/70 shadow-sm border border-stone-800/30 opacity-70 pointer-events-none"></div>
+</div>
+<div class="min-w-0 flex flex-col">
+<span class="font-headline text-base sm:text-lg font-semibold text-on-surface truncate leading-tight transition-colors duration-200 hover:text-primary" id="track-title">1901 (Acoustic French Wave)</span>
+<span class="text-xs text-on-surface-variant truncate font-normal mt-0.5" id="track-artist">Phoenix / Summer Sunset Re-edit</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 sm:gap-2">
+<!-- Shuffle -->
+<button class="relative p-1.5 rounded-full text-on-surface-variant hover:text-primary transition-all duration-200 hover:scale-110 active:scale-90" id="btn-shuffle" title="Shuffle">
+<span class="material-symbols-outlined text-[19px] block">shuffle</span>
+<span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary opacity-0 transition-opacity" id="shuffle-indicator"></span>
+</button>
+<!-- Previous -->
+<button class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-secondary-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm hover:shadow" id="btn-prev" title="Previous Track">
+<span class="material-symbols-outlined text-[20px] transition-transform duration-200 active:-translate-x-0.5">skip_previous</span>
+</button>
+<!-- Play / Pause with Ripple Glow & Spring bounce -->
+<div class="relative flex items-center justify-center">
+<div class="absolute inset-0 rounded-full bg-primary pointer-events-none opacity-0" id="play-ripple"></div>
+<button class="relative z-10 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-primary hover:bg-primary-container text-on-primary flex items-center justify-center shadow-lg hover:shadow-primary/30 transition-all duration-200 hover:scale-105 active:scale-90" id="btn-play" title="Play / Pause">
+<span class="material-symbols-outlined text-[26px] transition-transform duration-200" id="play-icon">play_arrow</span>
+</button>
+</div>
+<!-- Next -->
+<button class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-secondary-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm hover:shadow" id="btn-next" title="Next Track">
+<span class="material-symbols-outlined text-[20px] transition-transform duration-200 active:translate-x-0.5">skip_next</span>
+</button>
+<!-- Repeat -->
+<button class="relative p-1.5 rounded-full text-on-surface-variant hover:text-primary transition-all duration-200 hover:scale-110 active:scale-90" id="btn-repeat" title="Repeat">
+<span class="material-symbols-outlined text-[19px] block">repeat</span>
+<span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary opacity-0 transition-opacity" id="repeat-indicator"></span>
+</button>
+</div>
+</div>
+<!-- Interactive Scrubber Bar with Buffer & Hover Tooltip -->
+<div class="flex flex-col gap-1.5 relative">
+<!-- Seek hover tooltip -->
+<div class="absolute -top-7 px-1.5 py-0.5 rounded bg-on-surface text-surface text-[10px] font-mono pointer-events-none opacity-0 transition-opacity duration-150 shadow -translate-x-1/2 z-20" id="scrubber-tooltip">1:24</div>
+<div class="relative group flex items-center cursor-pointer py-2" id="scrubber-container">
+<div class="w-full h-1.5 group-hover:h-2 bg-surface-container-highest rounded-full overflow-hidden relative transition-all duration-200">
+<!-- Buffer progress bar -->
+<div class="absolute top-0 left-0 h-full bg-outline-variant/60 rounded-full transition-all duration-500" id="buffer-bar" style="width: 66%;"></div>
+<!-- Playhead progress bar -->
+<div class="h-full bg-primary rounded-full relative shadow-sm transition-[width] duration-150 ease-linear" id="progress-bar" style="width: 38%;">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent to-white/30"></div>
+</div>
+</div>
+<div class="absolute w-3.5 h-3.5 bg-on-surface border-2 border-white rounded-full shadow-md -translate-x-1/2 opacity-90 group-hover:opacity-100 group-hover:scale-125 transition-transform duration-150 pointer-events-none" id="scrubber-knob" style="left: 38%;"></div>
+</div>
+<div class="flex justify-between items-center text-[11px] font-medium text-on-surface-variant font-mono">
+<span id="time-current" class="">1:24</span>
+<span id="time-total" class="">3:48</span>
+</div>
+</div>
+<!-- Real-time Equalizer Sound Waves + Volume Controls -->
+<div class="flex items-center justify-between pt-0.5 text-xs text-on-surface-variant">
+<div class="flex items-center gap-2" id="eq-wrapper">
+<div class="flex items-end gap-[2.5px] h-4 text-primary" id="eq-bars">
+<div class="eq-bar h-1"></div>
+<div class="eq-bar h-3"></div>
+<div class="eq-bar h-1.5"></div>
+<div class="eq-bar h-2.5"></div>
+</div>
+<span class="font-medium tracking-wide text-[11px] sm:text-xs text-stone-700">Tape Saturation Warmth</span>
+</div>
+<div class="flex items-center gap-2 group/vol">
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-150 flex items-center" id="vol-icon-btn" title="Mute/Unmute">
+<span class="material-symbols-outlined text-[18px] transition-transform duration-150 active:scale-90" id="vol-icon">volume_up</span>
+</button>
+<div class="w-20 sm:w-24 h-1.5 group-hover/vol:h-2 bg-surface-container-highest rounded-full overflow-hidden cursor-pointer relative transition-all duration-200" id="vol-container" title="Adjust volume">
+<div class="h-full bg-on-surface-variant/80 group-hover/vol:bg-primary rounded-full transition-all duration-150 relative" id="vol-bar" style="width: 75%;">
+<div class="absolute right-0 top-0 bottom-0 w-1 bg-white/40 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Shelf Playlist Footer with Card Micro-interactions -->
+<footer class="fixed bottom-0 left-0 right-0 z-30 backdrop-blur-md bg-white/80 border-t border-amber-900/10 flex items-center px-4 md:px-8 justify-between shadow-[0_-4px_20px_rgba(58,48,42,0.04)]" style="height: 98px;">
+<div class="flex items-center gap-2.5 flex-shrink-0 pr-4 border-r border-amber-900/10">
+<div class="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center text-primary transition-transform duration-200 hover:rotate-6">
+<span class="material-symbols-outlined text-[15px]">queue_music</span>
+</div>
+<span class="text-[11px] font-semibold tracking-wider text-stone-700 uppercase hidden sm:inline-block">Up Next</span>
+<div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-[10px] font-bold text-on-surface-variant shadow-inner">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+<span class="">5</span>
+</div>
+</div>
+<div class="flex-1 overflow-x-auto custom-scroll-shelf flex items-center gap-3 px-3 sm:px-6 py-2" id="playlist-shelf">
+<!-- Card 0 -->
+<div class="playlist-item flex items-center gap-3.5 px-3.5 py-2 rounded-xl bg-primary/10 border-2 border-primary/40 shadow-sm transition-all duration-200 cursor-pointer group flex-shrink-0 hover:-translate-y-1 hover:shadow-md active:scale-95" data-index="0">
+<div class="relative w-13 h-13 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+<img alt="1901 (Acoustic French Wave)" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdoS-zASUkMF0gzhdiuD93z9HzXJlMkpbvVF1kpPI6Ls4162wanoZBfAEgMouOh2BYdQrgxD6u6CMDaLkl_xRrj_OHP8p9D10rsXBh_jcNR7B9nuL3CQxiaNp-fGDJRR-Bfpw8k-5PMjhkg_WBIg8NGnXfG7dvxRwtOm-30y8hstjbDsLCEo_btIqt3bSuRyiLlhAA140lKP3GjEsLWTsOoB0QquVJ7twiJQjFkaFsZ3TMeelZVBeeoQ">
+<div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+<span class="material-symbols-outlined text-white text-[20px]">play_arrow</span>
+</div>
+</div>
+<div class="flex flex-col text-left justify-center min-w-0 pr-1">
+<span class="font-semibold text-[13px] text-primary leading-tight transition-colors truncate card-title">1901 (Acoustic)</span>
+<span class="text-xs text-stone-500 leading-tight mt-1 truncate">Phoenix / Summer</span>
+</div>
+<span class="text-xs text-stone-400 ml-2 font-mono">3:48</span>
+</div>
+<!-- Card 1 -->
+<div class="playlist-item flex items-center gap-3.5 px-3.5 py-2 rounded-xl bg-surface-container-low/80 hover:bg-white border border-amber-900/5 hover:border-primary/30 transition-all duration-200 cursor-pointer group flex-shrink-0 shadow-sm hover:-translate-y-1 hover:shadow-md active:scale-95" data-index="1">
+<div class="relative w-13 h-13 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+<img alt="The Drifter's Path" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AEtjO1WK-YsPHo1HkSKAhxUMZdckLif-RKYo6eio3t2PSauMCLb1zuA9R58U2TWomsb6QlMAjzpzublOcq04PcfvXT6FbBUxfjjtiPryO31-3yVtJNc5YUW1U_poauZhCgWttXyWpZ8WJ6c_YQO3FJ9lVP_tVpNBp10FfsNEPpR6np-HFgUV4J528Gh2jE6xCl30dTdN4ILTsMan-mTDsCgdo7xFW8c6kHPzv9026KpOjP9vHlA3pa3nFpJWEoc">
+<div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+<span class="material-symbols-outlined text-white text-[20px]">play_arrow</span>
+</div>
+</div>
+<div class="flex flex-col text-left justify-center min-w-0 pr-1">
+<span class="font-semibold text-[13px] text-stone-800 leading-tight group-hover:text-primary transition-colors truncate card-title">The Drifter's Path</span>
+<span class="text-xs text-stone-500 leading-tight mt-1 truncate">Sarah Jenkins</span>
+</div>
+<span class="text-xs text-stone-400 ml-2 font-mono">4:18</span>
+</div>
+<!-- Card 2 -->
+<div class="playlist-item flex items-center gap-3.5 px-3.5 py-2 rounded-xl bg-surface-container-low/80 hover:bg-white border border-amber-900/5 hover:border-primary/30 transition-all duration-200 cursor-pointer group flex-shrink-0 shadow-sm hover:-translate-y-1 hover:shadow-md active:scale-95" data-index="2">
+<div class="relative w-13 h-13 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+<img alt="Golden Hour Daze" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AEtjO1XeNNn485DZ3Er_0fyymLFI3xRVYEmp16v3ImMMusIfi7hNxhqtQgolVjxJZ5mlPZF7new0xTSU3Va_D67K9pVHuB-eX69ZJWcz32LjMaZ82DoNPmJhTE9eq9UD93wiopiW0y9OO0kEV1mXLeQL-4TcF5gUu8mC3Z5GWMr-SEdlttgcJu3D9huosPJY9KICRtzAsnIOWz0_3AJejSzvoJLP1F1v2WauRf29EfISAy4aGur2X_HllJpA3SGj">
+<div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+<span class="material-symbols-outlined text-white text-[20px]">play_arrow</span>
+</div>
+</div>
+<div class="flex flex-col text-left justify-center min-w-0 pr-1">
+<span class="font-semibold text-[13px] text-stone-800 leading-tight group-hover:text-primary transition-colors truncate card-title">Golden Hour Daze</span>
+<span class="text-xs text-stone-500 leading-tight mt-1 truncate">Aurora Skies</span>
+</div>
+<span class="text-xs text-stone-400 ml-2 font-mono">3:32</span>
+</div>
+<!-- Card 3 -->
+<div class="playlist-item flex items-center gap-3.5 px-3.5 py-2 rounded-xl bg-surface-container-low/80 hover:bg-white border border-amber-900/5 hover:border-primary/30 transition-all duration-200 cursor-pointer group flex-shrink-0 shadow-sm hover:-translate-y-1 hover:shadow-md active:scale-95" data-index="3">
+<div class="relative w-13 h-13 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+<img alt="Drifting Coast" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AEtjO1XLsxLvO5Woy1IhNOOzCEg0LvQuBZNKk9TzMAu1MBLYQuHZxPqBnZ1Exf_v1hW7ytZ45ypr0JrT5qz0PmBAqT8TSmVoxePI9KVzJzmjiRDcEKtx9nFtxVyn7Pgc_fMQ_bZBUhUqVdg_a0ZUq2I8qXL7GX7vIUCyDw5Q3dEkG7oCHPBXtJGVnKzC4h-QuTAfLiryjlipdtG3eaZYjqRhEUzBiVBdU4kPkqOxv2lq5DdWd0aeMjj3HhJy65Dg">
+<div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+<span class="material-symbols-outlined text-white text-[20px]">play_arrow</span>
+</div>
+</div>
+<div class="flex flex-col text-left justify-center min-w-0 pr-1">
+<span class="font-semibold text-[13px] text-stone-800 leading-tight group-hover:text-primary transition-colors truncate card-title">Drifting Coast</span>
+<span class="text-xs text-stone-500 leading-tight mt-1 truncate">Aurora Halo</span>
+</div>
+<span class="text-xs text-stone-400 ml-2 font-mono">4:05</span>
+</div>
+<!-- Card 4 -->
+<div class="playlist-item flex items-center gap-3.5 px-3.5 py-2 rounded-xl bg-surface-container-low/80 hover:bg-white border border-amber-900/5 hover:border-primary/30 transition-all duration-200 cursor-pointer group flex-shrink-0 shadow-sm hover:-translate-y-1 hover:shadow-md active:scale-95" data-index="4">
+<div class="relative w-13 h-13 sm:w-14 sm:h-14 rounded-xl overflow-hidden flex-shrink-0 shadow-sm">
+<img alt="Sunlight on Cedar" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AEtjO1XeNNn485DZ3Er_0fyymLFI3xRVYEmp16v3ImMMusIfi7hNxhqtQgolVjxJZ5mlPZF7new0xTSU3Va_D67K9pVHuB-eX69ZJWcz32LjMaZ82DoNPmJhTE9eq9UD93wiopiW0y9OO0kEV1mXLeQL-4TcF5gUu8mC3Z5GWMr-SEdlttgcJu3D9huosPJY9KICRtzAsnIOWz0_3AJejSzvoJLP1F1v2WauRf29EfISAy4aGur2X_HllJpA3SGj">
+<div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+<span class="material-symbols-outlined text-white text-[20px]">play_arrow</span>
+</div>
+</div>
+<div class="flex flex-col text-left justify-center min-w-0 pr-1">
+<span class="font-semibold text-[13px] text-stone-800 leading-tight group-hover:text-primary transition-colors truncate card-title">Sunlight on Cedar</span>
+<span class="text-xs text-stone-500 leading-tight mt-1 truncate">Clara Vane</span>
+</div>
+<span class="text-xs text-stone-400 ml-2 font-mono">5:12</span>
+</div>
+</div>
+</footer>
+</main>
+<script>
+    (function() {
+      let isPlaying = false;
+      let progress = 38;
+      let duration = 228;
+      let currentSeconds = 84;
+      let playInterval = null;
+      let isShuffled = false;
+      let isRepeat = false;
+      let isMuted = false;
+      let previousVol = 75;
+
+      const btnPlay = document.getElementById('btn-play');
+      const playIcon = document.getElementById('play-icon');
+      const playRipple = document.getElementById('play-ripple');
+      const playerGlow = document.getElementById('player-glow');
+      const progressBar = document.getElementById('progress-bar');
+      const scrubberKnob = document.getElementById('scrubber-knob');
+      const scrubberTooltip = document.getElementById('scrubber-tooltip');
+      const timeCurrent = document.getElementById('time-current');
+      const timeTotal = document.getElementById('time-total');
+      const scrubberContainer = document.getElementById('scrubber-container');
+      const bufferBar = document.getElementById('buffer-bar');
+
+      const trackArtwork = document.getElementById('track-artwork');
+      const artWrapper = document.getElementById('art-wrapper');
+      const trackTitle = document.getElementById('track-title');
+      const trackArtist = document.getElementById('track-artist');
+      const trackMetaContainer = document.getElementById('track-meta-container');
+      const eqBars = document.getElementById('eq-bars');
+
+      const btnNext = document.getElementById('btn-next');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnShuffle = document.getElementById('btn-shuffle');
+      const shuffleIndicator = document.getElementById('shuffle-indicator');
+      const btnRepeat = document.getElementById('btn-repeat');
+      const repeatIndicator = document.getElementById('repeat-indicator');
+
+      const volContainer = document.getElementById('vol-container');
+      const volBar = document.getElementById('vol-bar');
+      const volIconBtn = document.getElementById('vol-icon-btn');
+      const volIcon = document.getElementById('vol-icon');
+
+      const playlist = [
+        {
+          title: "1901 (Acoustic French Wave)",
+          artist: "Phoenix / Summer Sunset Re-edit",
+          dur: "3:48",
+          sec: 228,
+          art: "https://lh3.googleusercontent.com/aida-public/AB6AXuDdoS-zASUkMF0gzhdiuD93z9HzXJlMkpbvVF1kpPI6Ls4162wanoZBfAEgMouOh2BYdQrgxD6u6CMDaLkl_xRrj_OHP8p9D10rsXBh_jcNR7B9nuL3CQxiaNp-fGDJRR-Bfpw8k-5PMjhkg_WBIg8NGnXfG7dvxRwtOm-30y8hstjbDsLCEo_btIqt3bSuRyiLlhAA140lKP3GjEsLWTsOoB0QquVJ7twiJQjFkaFsZ3TMeelZVBeeoQ"
+        },
+        {
+          title: "The Drifter's Path",
+          artist: "Sarah Jenkins",
+          dur: "4:18",
+          sec: 258,
+          art: "https://lh3.googleusercontent.com/aida/AEtjO1WK-YsPHo1HkSKAhxUMZdckLif-RKYo6eio3t2PSauMCLb1zuA9R58U2TWomsb6QlMAjzpzublOcq04PcfvXT6FbBUxfjjtiPryO31-3yVtJNc5YUW1U_poauZhCgWttXyWpZ8WJ6c_YQO3FJ9lVP_tVpNBp10FfsNEPpR6np-HFgUV4J528Gh2jE6xCl30dTdN4ILTsMan-mTDsCgdo7xFW8c6kHPzv9026KpOjP9vHlA3pa3nFpJWEoc"
+        },
+        {
+          title: "Golden Hour Daze",
+          artist: "Aurora Skies",
+          dur: "3:32",
+          sec: 212,
+          art: "https://lh3.googleusercontent.com/aida/AEtjO1XeNNn485DZ3Er_0fyymLFI3xRVYEmp16v3ImMMusIfi7hNxhqtQgolVjxJZ5mlPZF7new0xTSU3Va_D67K9pVHuB-eX69ZJWcz32LjMaZ82DoNPmJhTE9eq9UD93wiopiW0y9OO0kEV1mXLeQL-4TcF5gUu8mC3Z5GWMr-SEdlttgcJu3D9huosPJY9KICRtzAsnIOWz0_3AJejSzvoJLP1F1v2WauRf29EfISAy4aGur2X_HllJpA3SGj"
+        },
+        {
+          title: "Drifting Coast",
+          artist: "Aurora Halo",
+          dur: "4:05",
+          sec: 245,
+          art: "https://lh3.googleusercontent.com/aida/AEtjO1XLsxLvO5Woy1IhNOOzCEg0LvQuBZNKk9TzMAu1MBLYQuHZxPqBnZ1Exf_v1hW7ytZ45ypr0JrT5qz0PmBAqT8TSmVoxePI9KVzJzmjiRDcEKtx9nFtxVyn7Pgc_fMQ_bZBUhUqVdg_a0ZUq2I8qXL7GX7vIUCyDw5Q3dEkG7oCHPBXtJGVnKzC4h-QuTAfLiryjlipdtG3eaZYjqRhEUzBiVBdU4kPkqOxv2lq5DdWd0aeMjj3HhJy65Dg"
+        },
+        {
+          title: "Sunlight on Cedar",
+          artist: "Clara Vane",
+          dur: "5:12",
+          sec: 312,
+          art: "https://lh3.googleusercontent.com/aida/AEtjO1XeNNn485DZ3Er_0fyymLFI3xRVYEmp16v3ImMMusIfi7hNxhqtQgolVjxJZ5mlPZF7new0xTSU3Va_D67K9pVHuB-eX69ZJWcz32LjMaZ82DoNPmJhTE9eq9UD93wiopiW0y9OO0kEV1mXLeQL-4TcF5gUu8mC3Z5GWMr-SEdlttgcJu3D9huosPJY9KICRtzAsnIOWz0_3AJejSzvoJLP1F1v2WauRf29EfISAy4aGur2X_HllJpA3SGj"
+        }
+      ];
+
+      let currentIndex = 0;
+
+      function formatTime(sec) {
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return m + ':' + (s < 10 ? '0' : '') + s;
+      }
+
+      function updateUI() {
+        progressBar.style.width = progress + '%';
+        scrubberKnob.style.left = progress + '%';
+        timeCurrent.innerText = formatTime(currentSeconds);
+        // Simulate dynamic buffer caching ahead of playback
+        const buf = Math.min(100, progress + 28);
+        bufferBar.style.width = buf + '%';
+      }
+
+      function highlightActiveCard(idx) {
+        const cards = document.querySelectorAll('.playlist-item');
+        cards.forEach((card, i) => {
+          const titleSpan = card.querySelector('.card-title');
+          if (i === idx) {
+            card.className = "playlist-item flex items-center gap-3.5 px-3.5 py-2 rounded-xl bg-primary/10 border-2 border-primary/40 shadow-sm transition-all duration-200 cursor-pointer group flex-shrink-0 hover:-translate-y-1 hover:shadow-md active:scale-95";
+            if (titleSpan) {
+              titleSpan.className = "font-semibold text-[13px] text-primary leading-tight transition-colors truncate card-title";
+            }
+          } else {
+            card.className = "playlist-item flex items-center gap-3.5 px-3.5 py-2 rounded-xl bg-surface-container-low/80 hover:bg-white border border-amber-900/5 hover:border-primary/30 transition-all duration-200 cursor-pointer group flex-shrink-0 shadow-sm hover:-translate-y-1 hover:shadow-md active:scale-95";
+            if (titleSpan) {
+              titleSpan.className = "font-semibold text-[13px] text-stone-800 leading-tight group-hover:text-primary transition-colors truncate card-title";
+            }
+          }
+        });
+      }
+
+      function startPlayback() {
+        isPlaying = true;
+        playIcon.innerText = 'pause';
+        playRipple.classList.add('ripple-active');
+        playerGlow.classList.remove('opacity-0');
+        playerGlow.classList.add('player-aura-active');
+        eqBars.classList.add('is-playing');
+        artWrapper.classList.add('vinyl-spin');
+        artWrapper.classList.remove('vinyl-paused');
+
+        clearInterval(playInterval);
+        playInterval = setInterval(function() {
+          if (currentSeconds < duration) {
+            currentSeconds++;
+            progress = (currentSeconds / duration) * 100;
+            updateUI();
+          } else {
+            if (isRepeat) {
+              currentSeconds = 0;
+              progress = 0;
+              updateUI();
+            } else {
+              loadTrack(currentIndex + 1, true);
+            }
+          }
+        }, 1000);
+      }
+
+      function pausePlayback() {
+        isPlaying = false;
+        playIcon.innerText = 'play_arrow';
+        playRipple.classList.remove('ripple-active');
+        playerGlow.classList.remove('player-aura-active');
+        playerGlow.classList.add('opacity-0');
+        eqBars.classList.remove('is-playing');
+        artWrapper.classList.add('vinyl-paused');
+        clearInterval(playInterval);
+      }
+
+      btnPlay.addEventListener('click', function() {
+        if (isPlaying) {
+          pausePlayback();
+        } else {
+          startPlayback();
+        }
+      });
+
+      // Scrub Bar Interactions with Tooltip & Drag/Click
+      let isDraggingScrub = false;
+
+      function handleScrub(e) {
+        const rect = scrubberContainer.getBoundingClientRect();
+        const clickPos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        progress = clickPos * 100;
+        currentSeconds = Math.round(clickPos * duration);
+        updateUI();
+      }
+
+      scrubberContainer.addEventListener('mousedown', function(e) {
+        isDraggingScrub = true;
+        handleScrub(e);
+      });
+
+      window.addEventListener('mousemove', function(e) {
+        const rect = scrubberContainer.getBoundingClientRect();
+        if (isDraggingScrub) {
+          handleScrub(e);
+        }
+        // Hover tooltip calculation
+        if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top - 15 && e.clientY <= rect.bottom + 15) {
+          const hoverPos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+          scrubberTooltip.style.left = (hoverPos * 100) + '%';
+          scrubberTooltip.innerText = formatTime(hoverPos * duration);
+          scrubberTooltip.classList.remove('opacity-0');
+        } else if (!isDraggingScrub) {
+          scrubberTooltip.classList.add('opacity-0');
+        }
+      });
+
+      window.addEventListener('mouseup', function() {
+        if (isDraggingScrub) {
+          isDraggingScrub = false;
+          scrubberTooltip.classList.add('opacity-0');
+        }
+      });
+
+      function loadTrack(idx, autoPlay) {
+        if (isShuffled && playlist.length > 1) {
+          let randIdx;
+          do {
+            randIdx = Math.floor(Math.random() * playlist.length);
+          } while (randIdx === currentIndex);
+          currentIndex = randIdx;
+        } else {
+          currentIndex = (idx + playlist.length) % playlist.length;
+        }
+
+        // Crossfade animation on track switch
+        trackMetaContainer.classList.remove('track-ready');
+        trackMetaContainer.classList.add('track-switching');
+
+        setTimeout(() => {
+          const t = playlist[currentIndex];
+          trackTitle.innerText = t.title;
+          trackArtist.innerText = t.artist;
+          timeTotal.innerText = t.dur;
+          trackArtwork.src = t.art;
+          duration = t.sec;
+          currentSeconds = 0;
+          progress = 0;
+          updateUI();
+          highlightActiveCard(currentIndex);
+
+          trackMetaContainer.classList.remove('track-switching');
+          trackMetaContainer.classList.add('track-ready');
+
+          if (autoPlay) {
+            startPlayback();
+          }
+        }, 200);
+      }
+
+      btnNext.addEventListener('click', function() {
+        loadTrack(currentIndex + 1, isPlaying);
+      });
+
+      btnPrev.addEventListener('click', function() {
+        loadTrack(currentIndex - 1, isPlaying);
+      });
+
+      // Shuffle Toggle
+      btnShuffle.addEventListener('click', function() {
+        isShuffled = !isShuffled;
+        if (isShuffled) {
+          btnShuffle.classList.add('text-primary');
+          shuffleIndicator.classList.remove('opacity-0');
+        } else {
+          btnShuffle.classList.remove('text-primary');
+          shuffleIndicator.classList.add('opacity-0');
+        }
+      });
+
+      // Repeat Toggle
+      btnRepeat.addEventListener('click', function() {
+        isRepeat = !isRepeat;
+        if (isRepeat) {
+          btnRepeat.classList.add('text-primary');
+          repeatIndicator.classList.remove('opacity-0');
+        } else {
+          btnRepeat.classList.remove('text-primary');
+          repeatIndicator.classList.add('opacity-0');
+        }
+      });
+
+      // Playlist Card Clicks
+      const playlistCards = document.querySelectorAll('.playlist-item');
+      playlistCards.forEach((card) => {
+        card.addEventListener('click', function() {
+          const idx = parseInt(this.getAttribute('data-index'), 10);
+          loadTrack(idx, true);
+        });
+      });
+
+      // Volume Slider & Mute/Unmute
+      volContainer.addEventListener('click', function(e) {
+        const rect = volContainer.getBoundingClientRect();
+        const p = Math.max(0, Math.min(100, Math.round(((e.clientX - rect.left) / rect.width) * 100)));
+        volBar.style.width = p + '%';
+        if (p === 0) {
+          volIcon.innerText = 'volume_off';
+          isMuted = true;
+        } else if (p < 50) {
+          volIcon.innerText = 'volume_down';
+          isMuted = false;
+        } else {
+          volIcon.innerText = 'volume_up';
+          isMuted = false;
+        }
+        previousVol = p > 0 ? p : 75;
+      });
+
+      volIconBtn.addEventListener('click', function() {
+        isMuted = !isMuted;
+        if (isMuted) {
+          volBar.style.width = '0%';
+          volIcon.innerText = 'volume_off';
+        } else {
+          volBar.style.width = previousVol + '%';
+          volIcon.innerText = previousVol < 50 ? 'volume_down' : 'volume_up';
+        }
+      });
+
+      // Initial setup
+      updateUI();
+    })();
+  </script>
+
+
+</body></html>

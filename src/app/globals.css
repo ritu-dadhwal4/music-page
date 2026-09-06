@@ -1,0 +1,171 @@
+@import 'tailwindcss';
+
+/*
+ * Palette ported from the Sahara / Warm Minimalism prototypes in
+ * mobile/code.html and desktop/code.html. Every neutral is warm-shifted -
+ * there is no true gray and no cold white anywhere in the system.
+ */
+@theme {
+  --color-primary: #c2652a;
+  --color-primary-container: #e08850;
+  --color-primary-fixed: #fbe8d8;
+  --color-primary-fixed-dim: #f0a878;
+  --color-on-primary: #ffffff;
+
+  --color-secondary: #78706a;
+  --color-secondary-container: #eae2da;
+  --color-on-secondary-container: #605850;
+
+  --color-tertiary: #8c3c3c;
+  --color-error: #c0392b;
+
+  --color-surface: #faf5ee;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f6f0e8;
+  --color-surface-container: #f2ece4;
+  --color-surface-container-high: #ece6dc;
+  --color-surface-container-highest: #e6e0d6;
+  --color-surface-dim: #dcd6cc;
+
+  --color-on-surface: #3a302a;
+  --color-on-surface-variant: #605850;
+  --color-outline: #9a9088;
+  --color-outline-variant: #d8d0c8;
+
+  --font-headline: var(--font-eb-garamond), Georgia, 'Times New Roman', serif;
+  --font-body: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-hand: var(--font-caveat), 'Bradley Hand', cursive;
+  --font-numeric: var(--font-roboto-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+/*
+ * Light-text theme. The owner flips this from the Appearance tab when a dark
+ * background photo would otherwise leave the default dark text unreadable.
+ * Only the *page-level* text tokens move - cards stay warm-white with dark
+ * text in both themes, exactly as the design intends.
+ */
+@layer base {
+  html {
+    background: var(--color-surface);
+    /* Keeps the page from jumping horizontally when a scrollbar appears. */
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    margin: 0;
+    color: var(--color-on-surface);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Never let the decorative polaroid tilt widen the page on a 390px screen. */
+  html,
+  body {
+    overflow-x: hidden;
+  }
+}
+
+@utility page-text-dark {
+  --page-fg: var(--color-on-surface);
+  --page-fg-muted: var(--color-secondary);
+}
+
+@utility page-text-light {
+  --page-fg: #fdf8f2;
+  --page-fg-muted: rgba(253, 248, 242, 0.72);
+}
+
+@utility text-page {
+  color: var(--page-fg, var(--color-on-surface));
+}
+
+@utility text-page-muted {
+  color: var(--page-fg-muted, var(--color-secondary));
+}
+
+/* Native range inputs, restyled warm. Used by seek and volume on both layouts. */
+@layer components {
+  .range-warm {
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .range-warm::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 9999px;
+    background: linear-gradient(
+      to right,
+      var(--color-primary) 0%,
+      var(--color-primary) var(--range-progress, 0%),
+      var(--color-surface-container-highest) var(--range-progress, 0%),
+      var(--color-surface-container-highest) 100%
+    );
+  }
+
+  .range-warm::-moz-range-track {
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--color-surface-container-highest);
+  }
+
+  .range-warm::-moz-range-progress {
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--color-primary);
+  }
+
+  .range-warm::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: -4px;
+    border: none;
+    border-radius: 9999px;
+    background: var(--color-primary);
+    box-shadow: 0 1px 4px rgba(58, 48, 42, 0.28);
+  }
+
+  .range-warm::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border: none;
+    border-radius: 9999px;
+    background: var(--color-primary);
+    box-shadow: 0 1px 4px rgba(58, 48, 42, 0.28);
+  }
+
+  .range-warm:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .range-warm:focus-visible::-moz-range-thumb {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /*
+   * Sliders are the one place a 44px tap target cannot come from padding -
+   * the hit area has to be the control itself. The track stays 6px visually;
+   * the element is 44px tall with the paint centred.
+   */
+  .range-warm {
+    height: 44px;
+  }
+}
+
+@keyframes vinyl-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
