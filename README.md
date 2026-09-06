@@ -210,8 +210,8 @@ route enforces the pattern, so a crafted name cannot reach another key.
   scroll-into-view on track change, which drops to instant under
   `prefers-reduced-motion` — a JS smooth scroll ignores the CSS rule.
 - **The decorative vinyl disc was removed** after the build, by request. The
-  desktop stage now sits on the plain warm gradient. `SPEC.md` §5b still
-  describes it; the code is the source of truth here.
+  desktop stage now sits on the plain warm gradient, and `SPEC.md` §5b was
+  updated to match — spec, prompts and code all describe the same product.
 
 ---
 

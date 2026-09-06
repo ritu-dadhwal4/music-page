@@ -112,7 +112,8 @@ Follow the mobile screenshot in `design/` closely. Top to bottom, single column:
 
 **Header block** — `pageTitle` in the serif display face, large. `subtitle` below it in small italic letter-spaced caps.
 
-**Polaroid frame** — the white-bordered tilted card from the design. This is where the YouTube player lives.
+**Polaroid frame** — the white-bordered tilted card from the design, with a wider border along the bottom edge. This is where the YouTube player lives.
+- The inner window is **16:9 landscape**, not the near-square of a real polaroid. A square window letterboxes every video with warm bars top and bottom — the same artifact this spec rejects for thumbnails.
 - The YouTube iframe renders **inside** the polaroid's inner window. It must remain visible and unobscured at all times. Do not set `display:none`, do not cover it with an overlay, do not shrink it to zero, do not play audio with the player hidden.
 - `photoCaption` renders on the lower white border in the handwritten style.
 - When `photoUrl` is set and no track is playing, show the photo in the frame. On first play, the iframe replaces it.
@@ -142,11 +143,11 @@ Follow the desktop screenshot in `design/`. Structurally different from mobile: 
 
 **Top bar** — thin, full width, cream. `pageTitle` at the left in the serif face, small. A thin vertical divider after it, then `subtitle` in small italic caps. Settings gear at the far right (settings mode only).
 
-**Stage** — fills the space between the top bar and the queue strip.
-- A large decorative vinyl disc, centered, rendered as CSS/SVG. It is background art: concentric groove rings, warm center label, slight rotation. Animate a slow rotation while a track is playing and pause it when the player pauses. This is the signature element of the desktop design.
-- The **YouTube iframe sits centered on top of the disc** in a rounded rectangle card at 16:9, roughly `640px` wide. Same rule as mobile: it stays visible and unobscured whenever a track is playing.
+**Stage** — fills the space between the top bar and the queue strip. Keep it calm: the video card is the only thing in it, on the warm gradient, with nothing competing for attention.
+- The **YouTube iframe sits centered in the stage** in a rounded rectangle card at 16:9, roughly `640px` wide, with a dark espresso surround about `12px` thick. Same rule as mobile: it stays visible and unobscured whenever a track is playing.
+- The card's width must respond to viewport *height*, not only width, so a short laptop screen shrinks it rather than pushing the queue strip off the bottom.
 - The floating **player control card** sits below the video card, overlapping its lower edge slightly, as in the screenshot. This card is **horizontal**, not the tall stacked mobile card: thumbnail and track title on the left, then transport controls inline to the right (shuffle · previous · play/pause · next · repeat), with the seek bar and timings on a second line, and a small volume slider bottom right.
-- Do not let the control card cover the video. The overlap is with the card's own drop shadow region and the vinyl art beneath, never the iframe.
+- Do not let the control card cover the video. The overlap is with the video card's own padding and drop shadow, never the iframe itself.
 - When no background image is set, the stage uses the warm cream gradient from the design.
 
 **Queue strip** — pinned to the bottom, full width, on a lighter surface.
@@ -156,7 +157,7 @@ Follow the desktop screenshot in `design/`. Structurally different from mobile: 
 - Scroll horizontally with the wheel and with keyboard arrows. Fade the right edge to signal more content. When the playing track scrolls out of view, scroll it back into view automatically on track change.
 - Clicking a card plays that track.
 
-**Empty state** — vinyl disc renders with no video card; centered message where the player card would sit; queue strip hidden entirely.
+**Empty state** — no video card; centered message where the player card would sit; queue strip hidden entirely.
 
 **Shared between layouts:** all player state, the config, the API layer, and the settings panel logic. Only the presentational components differ. Do not fork the player controller.
 
@@ -214,10 +215,10 @@ Full-screen slide-over from the right, closes with an X. Two tabs.
 - The polaroid tilt is decorative — make sure it doesn't cause horizontal overflow at 390px.
 
 **Desktop**
-- Test at 1280, 1440, and 1920. The stage is vertically centered, so check short viewports (around 700px tall) — the vinyl must scale down rather than push the queue strip off screen.
+- Test at 1280, 1440, and 1920. The stage is vertically centered, so check short viewports (around 700px tall) — the video card must scale down rather than push the queue strip off screen.
 - The queue strip is pinned; the stage scrolls independently if it ever overflows.
 - Hover states exist on desktop and don't on mobile. Queue cards and transport controls need them.
-- The vinyl rotation should respect `prefers-reduced-motion` and stop animating when the tab is hidden.
+- Any motion should respect `prefers-reduced-motion` and stop when the tab is hidden.
 
 ---
 
